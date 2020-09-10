@@ -7,6 +7,8 @@ Click here to learn more. http://go.microsoft.com/fwlink/?LinkID=513275&clcid=0x
 module.exports = function (grunt) {
     var scriptsList = ["Scripts/*.js", "!Scripts/_references.js"];
 
+    const sass = require('node-sass');
+
     grunt.initConfig({
         bower: {
             install: {
@@ -44,6 +46,7 @@ module.exports = function (grunt) {
 
         sass: {
             options: {
+                implementation: sass,
                 sourceMap: true
             },
             dist: {

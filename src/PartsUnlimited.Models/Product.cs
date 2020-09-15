@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 using Newtonsoft.Json;
 
 namespace PartsUnlimited.Models
 {
-    [Bind(Exclude = "Created")]
+    //[Bind(Exclude = "Created")]
     public class Product
     {
         [ScaffoldColumn(false)]

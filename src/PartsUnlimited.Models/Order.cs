@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace PartsUnlimited.Models
 {
-    [Bind(Include = "OrderId,OrderDate,Username,Total,OrderDetails")]
+    //[Bind(Include = "OrderId,OrderDate,Username,Total,OrderDetails")]
     public class Order
     {
         //[BindNever]

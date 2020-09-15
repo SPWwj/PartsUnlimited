@@ -1,0 +1,99 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Threading
+
+@page "/order-tracking/{orderId:int}"
+@implements IDisposable
+
+@inject IOrdersClient OrdersClient
+
+<h1>Order Tracking</h1>
+
+@if (invalidOrder)
+{
+    <h2>Invalid order</h2>
+    <p>Sorry this order could not be loaded</p>
+    <a href="find-order">Find an order</a>
+}
+else if (orderWithStatus == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h2>Order status</h2>
+
+    <p>Expected delivery date: @orderWithStatus.Order.OrderDate.ToShortDateString()</p>
+
+    <p>Shipping to:</p>
+
+    <div>
+        @orderWithStatus.Order.Name<br>
+        @orderWithStatus.Order.Address<br>
+        @orderWithStatus.Order.City, @orderWithStatus.Order.State @orderWithStatus.Order.PostalCode
+        @orderWithStatus.Order.Country
+    </div>
+
+    <p>Status updates:</p>
+    <ul>
+        <li>Ordered on @orderWithStatus.Order.OrderDate.ToShortDateString() at @orderWithStatus.Order.OrderDate.ToShortTimeString().</li>
+        @foreach (var statusUpdate in orderWithStatus.StatusUpdates)
+        {
+            <li>@statusUpdate.StatusText on @statusUpdate.TimeStamp.ToShortDateString() at @statusUpdate.TimeStamp.ToShortTimeString().</li>
+        }
+    </ul>
+
+    <a href="@($"orders/{orderWithStatus.Order.OrderId}")">Order details</a>
+}
+
+@code {
+    OrderWithStatus orderWithStatus;
+    CancellationTokenSource pollingCancellationToken;
+    bool invalidOrder;
+
+    [Parameter]
+    public int OrderId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        // If we were already polling for a different order, stop doing so
+        pollingCancellationToken?.Cancel();
+
+        // Start a new poll loop
+        PollForUpdates(OrderId);
+    }
+
+    private async void PollForUpdates(int orderId)
+    {
+        invalidOrder = false;
+        pollingCancellationToken = new CancellationTokenSource();
+        while (!pollingCancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                orderWithStatus = await OrdersClient.GetOrder(orderId);
+                StateHasChanged();
+
+                if (orderWithStatus.IsDelivered)
+                {
+                    pollingCancellationToken.Cancel();
+                }
+                else
+                {
+                    await Task.Delay(4000);
+                }
+            }
+            catch (Exception ex)
+            {
+                invalidOrder = true;
+                pollingCancellationToken.Cancel();
+                Console.WriteLine(ex.Message);
+                StateHasChanged();
+            }
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        pollingCancellationToken?.Cancel();
+    }
+}

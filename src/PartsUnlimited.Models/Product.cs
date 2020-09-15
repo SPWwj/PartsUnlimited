@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.ModelBinding;
+using System.Web.Mvc;
 using Newtonsoft.Json;
 
 namespace PartsUnlimited.Models
 {
+    [Bind(Exclude = "Created")]
     public class Product
     {
         [ScaffoldColumn(false)]
@@ -45,7 +47,7 @@ namespace PartsUnlimited.Models
         public virtual List<OrderDetail> OrderDetails { get; set; }
 
         [ScaffoldColumn(false)]
-        [BindNever]
+        //[BindNever]
         [Required]
         public DateTime Created { get; set; }
 

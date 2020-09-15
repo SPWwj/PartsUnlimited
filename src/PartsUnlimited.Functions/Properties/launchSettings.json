@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PartsUnlimited.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "start --cors *"
+    }
+  }
+}

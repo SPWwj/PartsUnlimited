@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.ModelBinding;
+using System.Web.Mvc;
 
 namespace PartsUnlimited.Models
 {
-    //[Bind(Include = "FirstName,LastName,Address,City,State,PostalCode,Country,Phone,Email")]
+    [Bind(Include = "OrderId,OrderDate,Username,Total,OrderDetails")]
     public class Order
     {
-        [BindNever]
+        //[BindNever]
         [ScaffoldColumn(false)]
         public int OrderId { get; set; }
 
-        [BindNever]
+        //[BindNever]
         [ScaffoldColumn(false)]
         public System.DateTime OrderDate { get; set; }
 
-        [BindNever]
+        //[BindNever]
         [Required]
         [ScaffoldColumn(false)]
         public string Username { get; set; }
@@ -58,11 +59,11 @@ namespace PartsUnlimited.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [BindNever]
+        //[BindNever]
         [ScaffoldColumn(false)]
         public decimal Total { get; set; }
 
-        [BindNever]
+        //[BindNever]
         public List<OrderDetail> OrderDetails { get; set; }
     }
 }

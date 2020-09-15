@@ -1,0 +1,158 @@
+﻿@inherits LayoutComponentBase
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="primary-menu">
+                <div class="pull-left logo">
+                    <a class="block logo-image" href="/">
+                        <img src="/Images/unlimited_logo.png" alt="Parts Unlimited logo" />
+                    </a>
+                    <a class="block" href="/">
+                        <h1>Parts Unlimited</h1>
+                        <h2>a Fabrikam subsidiary</h2>
+                    </a>
+
+                    <div class="visible-xs cart">
+                        <a href="/ShoppingCart" class="head-link" id="shopping-cart-link"></a>
+                    </div>
+                </div>
+                <div class="pull-right navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse-header-nav">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="collapse-header-nav">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="hidden-xs">
+                                <div id="search-link-box">
+                                    <form action="Search" method="get">
+                                        <input type="text" name="q" class="form-control" id="search-box" placeholder="Keyword" />
+                                        <input type="submit" id="search-link" value="Search" />
+                                    </form>
+                                </div>
+                            </li>
+                            <li><a href="/" class="head-link" id="home-link">Home</a></li>
+                            @*
+                            @Html.Partial("_CartSummary", (IEnumerable<string>)ViewBag.CartSummary)
+                            @Html.Partial("_AdminMenu")
+                            @Html.Partial("_Login")
+                            <li class="dropdown visible-xs">
+                                <a href="@Url.Action("Index", "Store", new { Area = string.Empty })" class="dropdown-toggle head-link" data-toggle="dropdown">Categories&nbsp;<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    @Html.Partial("_CategoryMenu", (IEnumerable<Category>)ViewBag.Categories)
+                                </ul>
+                            </li>
+                            *@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="category-menu">
+            <div class="container">
+                <div class="hidden-xs">
+                    <ul>
+                        @*
+                        @model IEnumerable<PartsUnlimited.Models.Category>
+                            @foreach (var genre in Model)
+                            {
+                                <li>@Html.ActionLink(genre.Name, "Browse", "Store", new { CategoryId = genre.CategoryId, Area = string.Empty }, null)</li>
+                            }
+                            <li>@Html.ActionLink("More", "Index", "Store", new { Area = string.Empty }, null)</li>
+                            @Html.Partial("_CategoryMenu", (IEnumerable<Category>)ViewBag.Categories)
+                        *@
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @*@model PartsUnlimited.Models.Product
+        <div class="alert alert-new-arrival @if (Model == null) { <text>hidden</text>}" id="alert-new-arrival" role="alert">
+            <div class="container">
+                <div class="alert-content">
+                    <span class="glyphicon glyphicon-bullhorn"></span>
+                    @if (Model == null)
+                    {
+                        <a id="new-arrival" href="#"></a>
+                    }
+                    else
+                    {
+                        <a id="new-arrival" href="@Url.Action("Details", "Store", new { Area = string.Empty, id = Model.ProductId })">@string.Format(" New Arrival : {0}", Model.Title)</a>
+                    }
+                </div>
+            </div>
+        </div>
+        *@
+    </nav>
+    <div class="visible-xs search-box">
+        <form action="Search" method="get">
+            <input name="q" class="form-control" id="search-box" placeholder="Search" />
+            <input type="submit" id="search-link" value="Search" />
+        </form>
+    </div>
+</header>
+
+<div class="container">
+    @Body
+</div>
+<div class="clearfix"></div>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Site Menu</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="Store">Browse</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Account</h4>
+                    <ul>
+                        <li><a href="/Manage">ManageAccount</a></li>
+                        <li><a href="/ShoppingCard">Shopping Cart</a></li>
+                        <li><a href="/Orders">View Orders</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Additional Info</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms and Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Develop</h4>
+                    <ul>
+                        <li><a>GitHub Source</a></li>
+                        <li><a>License Agreement</a></li>
+                        <li><a href="http://asp.net/" target="_blank">ASP.NET</a></li>
+                    </ul>
+                    <p>Deploy to Azure</p>
+                    <a class="deploy-azure">
+                        <img src="deploy_button.png" alt="deploy to azure image" />
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="pull-left-sm">
+                        © @DateTime.UtcNow.Year Microsoft. Based on The Phoenix Project by <a href="http://www.realgenekim.me/" class="footer-link">Gene Kim</a>.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-left-sm pull-right-md">
+                        All rights reserved. Your payments are safe and secure.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

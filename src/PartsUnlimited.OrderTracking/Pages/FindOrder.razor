@@ -1,0 +1,28 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/find-order"
+
+@inject NavigationManager NavigationManager
+
+<h1>Find your order</h1>
+
+<EditForm Model="this" OnValidSubmit="LoadOrder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>Order number</label>
+    <InputText @bind-Value="OrderId" />
+
+    <button type="submit">Track order</button>
+</EditForm>
+
+@code {
+    [Required]
+    [RegularExpression("[0-9]+", ErrorMessage = "Please enter a valid order number.")]
+    public string OrderId { get; set; }
+
+    void LoadOrder()
+    {
+        NavigationManager.NavigateTo($"order-tracking/{OrderId}");
+    }
+}

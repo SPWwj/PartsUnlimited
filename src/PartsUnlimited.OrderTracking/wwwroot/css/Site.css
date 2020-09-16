@@ -41,6 +41,16 @@ input.valid.modified {
   color: red;
 }
 
+.table td {
+  padding: 8px;
+  line-height: 20px;
+  font-size: 14px;
+}
+
+.table-striped tr:nth-child(odd) {
+  background-color: white;
+}
+
 a {
   color: #424242;
   text-decoration: none; }

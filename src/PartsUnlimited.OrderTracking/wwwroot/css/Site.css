@@ -29,6 +29,18 @@ body {
         top: 0.5rem;
     }
 
+input.invalid {
+  box-shadow: 0 0 2px red;
+}
+
+input.valid.modified {
+  box-shadow: 0 0 2px green;
+}
+
+.validation-errors {
+  color: red;
+}
+
 a {
   color: #424242;
   text-decoration: none; }

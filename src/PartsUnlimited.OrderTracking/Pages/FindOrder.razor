@@ -1,23 +1,27 @@
-﻿@using System.ComponentModel.DataAnnotations
-
-@page "/find-order"
-
+﻿@page "/find-order"
+@using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
 
-<h1>Find your order</h1>
+<section>
+    <h2>Find your order</h2>
 
-<EditForm Model="this" OnValidSubmit="LoadOrder">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <EditForm Model="this" OnValidSubmit="LoadOrder">
+        <div class="form-group">
+            <h4>Order number</h4>
+            <InputText @bind-Value="OrderId" type="text" class="form-control" placeholder="Order number" />            
+        </div>
 
-    <label>Order number</label>
-    <InputText @bind-Value="OrderId" />
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Track order</button>
+        </div>
 
-    <button type="submit">Track order</button>
-</EditForm>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </EditForm>
+</section>
 
 @code {
-    [Required]
+    [Required(ErrorMessage = "Please enter your order number")]
     [RegularExpression("[0-9]+", ErrorMessage = "Please enter a valid order number.")]
     public string OrderId { get; set; }
 

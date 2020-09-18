@@ -9,12 +9,12 @@ namespace PartsUnlimited.ViewModels
 {
     public class OrdersModel
     {
-        public bool IsAdminSearch { get; }
-        public string InvalidOrderSearch { get; }
-        public IEnumerable<Order> Orders { get; }
-        public string Username { get; }
-        public DateTimeOffset StartDate { get; }
-        public DateTimeOffset EndDate { get; }
+        public bool IsAdminSearch { get; init; }
+        public string InvalidOrderSearch { get; init; }
+        public IEnumerable<Order> Orders { get; init; }
+        public string Username { get; init;  }
+        public DateTimeOffset StartDate { get; init; }
+        public DateTimeOffset EndDate { get; init; }
 
         public OrdersModel(IEnumerable<Order> orders, string username, DateTimeOffset startDate, DateTimeOffset endDate, string invalidOrderSearch, bool isAdminSearch)
         {

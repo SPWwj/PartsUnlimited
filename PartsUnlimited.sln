@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartsUnlimited.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartsUnlimited.Models", "src\PartsUnlimited.Models\PartsUnlimited.Models.csproj", "{C6E18287-B905-4685-9653-515ED914990B}"
 EndProject
-Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "PartsUnlimitedEnv", "env\PartsUnlimitedEnv.deployproj", "{BD52204A-7129-4FF2-B66C-34A5E6F70CDD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{C6E18287-B905-4685-9653-515ED914990B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6E18287-B905-4685-9653-515ED914990B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6E18287-B905-4685-9653-515ED914990B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD52204A-7129-4FF2-B66C-34A5E6F70CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD52204A-7129-4FF2-B66C-34A5E6F70CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD52204A-7129-4FF2-B66C-34A5E6F70CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD52204A-7129-4FF2-B66C-34A5E6F70CDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -40,7 +40,7 @@ namespace PartsUnlimited
                 }
                 else
                 {
-                    options.UseSqlite();
+                    options.UseSqlite("Data Source=partsunlimited.db");
                 }
             });
 

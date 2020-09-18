@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PartsUnlimited.Models
 {
@@ -63,6 +63,7 @@ namespace PartsUnlimited.Models
 
         public int LeadTime { get; set; }
 
+        [NotMapped]
         public Dictionary<string, string> ProductDetailList
         {
             get
@@ -73,23 +74,13 @@ namespace PartsUnlimited.Models
                 }
                 try
                 {
-                    var obj = JToken.Parse(ProductDetails);
+                    return JsonSerializer.Deserialize<Dictionary<string, string>>(ProductDetails);
                 }
-                catch (Exception)
+                catch (JsonException)
                 {
                     throw new FormatException("Product Details only accepts json format.");
                 }
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(ProductDetails);
             }
-        }
-
-        /// <summary>
-        /// TODO: Temporary hack to populate the orderdetails until EF does this automatically. 
-        /// </summary>
-        public Product()
-        {
-            OrderDetails = new List<OrderDetail>();
-            Created = DateTime.UtcNow;
         }
     }
 }

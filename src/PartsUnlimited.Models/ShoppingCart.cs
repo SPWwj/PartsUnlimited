@@ -87,12 +87,6 @@ namespace PartsUnlimited.Models
         public List<CartItem> GetCartItems()
         {
             var cartItems = _db.CartItems.Where(cart => cart.CartId == ShoppingCartId).ToList();
-            //TODO: Auto population of the related product data not available until EF feature is lighted up.
-            foreach (var cartItem in cartItems)
-            {
-                cartItem.Product = _db.Products.Single(a => a.ProductId == cartItem.ProductId);
-            }
-
             return cartItems;
         }
 
@@ -123,13 +117,7 @@ namespace PartsUnlimited.Models
             // the current price for each of those products in the cart
             // sum all product price totals to get the cart total
 
-            // TODO Collapse to a single query once EF supports querying related data
-            decimal total = 0;
-            foreach (var item in _db.CartItems.Where(c => c.CartId == ShoppingCartId).ToList())
-            {
-                var product = _db.Products.First(a => a.ProductId == item.ProductId);
-                total += item.Count * product.Price;
-            }
+            var total = _db.CartItems.Where(c => c.CartId == ShoppingCartId).Sum(cartItem => cartItem.Count * cartItem.Product.Price);
 
             return total;
         }
@@ -140,25 +128,24 @@ namespace PartsUnlimited.Models
 
             var cartItems = GetCartItems();
 
+            var orderDetails = new List<OrderDetail>();
             // Iterate over the items in the cart, adding the order details for each
             foreach (var item in cartItems)
             {
-                //var product = _db.Products.Find(item.ProductId);
-                var product = _db.Products.Single(a => a.ProductId == item.ProductId);
-
+                var product = item.Product; 
                 var orderDetail = new OrderDetail
                 {
                     ProductId = item.ProductId,
-                    OrderId = order.OrderId,
                     UnitPrice = product.Price,
                     Quantity = item.Count,
                 };
+                orderDetails.Add(orderDetail);
 
                 // Set the order total of the shopping cart
                 orderTotal += (item.Count * product.Price);
-
-                _db.OrderDetails.Add(orderDetail);
             }
+            order.OrderDetails = orderDetails;
+
 
             // Set the order's total to the orderTotal count
             order.Total = orderTotal;

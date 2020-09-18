@@ -36,22 +36,13 @@ namespace PartsUnlimited.Controllers
         public IActionResult Browse(int categoryId)
         {
             // Retrieve Category category and its Associated associated Products products from database
-
-            // TODO [EF] Swap to native support for loading related data when available
             var categoryModel = _db.Categories.Single(g => g.CategoryId == categoryId);
-            categoryModel.Products = _db.Products.Where(a => a.CategoryId == categoryModel.CategoryId).ToList();
-
             return View(categoryModel);
         }
 
         public IActionResult Details(int id)
         {
-            Product productData;
-
-            productData = _db.Products.Single(a => a.ProductId == id);
-            productData.Category = _db.Categories.Single(g => g.CategoryId == productData.CategoryId);
-
-
+            var productData = _db.Products.Single(a => a.ProductId == id);
             return View(productData);
         }
     }

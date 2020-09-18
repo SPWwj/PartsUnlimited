@@ -66,12 +66,12 @@ namespace PartsUnlimited.Controllers
                     order.Username = HttpContext.User.Identity.Name;
                     order.OrderDate = DateTime.Now;
 
-                    //Add the Order
-                    _db.Orders.Add(order);
-
                     //Process the order
                     var cart = ShoppingCart.GetCart(_db, HttpContext);
                     cart.CreateOrder(order);
+
+                    //Add the Order
+                    _db.Orders.Add(order);
 
                     // Save all changes
                     await _db.SaveChangesAsync(HttpContext.RequestAborted);

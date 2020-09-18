@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Server.Kestrel.Internal.Http;
 
 namespace PartsUnlimited.Areas.Admin.Controllers
 {
@@ -33,24 +32,7 @@ namespace PartsUnlimited.Areas.Admin.Controllers
 
         public IActionResult Index(SortField sortField = SortField.Name, SortDirection sortDirection = SortDirection.Up)
         {
-            // TODO [EF] Swap to native support for loading related data when available
-            var products = from product in _db.Products
-                           join category in _db.Categories on product.CategoryId equals category.CategoryId
-                           select new Product()
-                           {
-                               ProductArtUrl = product.ProductArtUrl,
-                               ProductId = product.ProductId,
-                               CategoryId = product.CategoryId,
-                               Price = product.Price,
-                               Title = product.Title,
-                               Category = new Category()
-                               {
-                                   CategoryId = product.CategoryId,
-                                   Name = category.Name
-                               }
-                           };
-
-            var sorted = Sort(products, sortField, sortDirection);
+            var sorted = Sort(_db.Products, sortField, sortDirection);
 
             return View(sorted);
         }
@@ -123,8 +105,6 @@ namespace PartsUnlimited.Areas.Admin.Controllers
                 return View((Product)null);
             }
 
-            // TODO [EF] We don't query related data as yet. We have to populate this until we do automatically.
-            product.Category = _db.Categories.Single(g => g.CategoryId == product.CategoryId);
             return View(product);
         }
 

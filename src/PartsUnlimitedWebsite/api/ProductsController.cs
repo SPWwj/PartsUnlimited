@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace PartsUnlimited.api.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {

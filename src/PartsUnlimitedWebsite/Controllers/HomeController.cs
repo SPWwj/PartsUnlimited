@@ -66,7 +66,6 @@ namespace PartsUnlimited.Controllers
             // Group the order details by product and return
             // the products with the highest count
 
-            // TODO [EF] We don't query related data as yet, so the OrderByDescending isn't doing anything
             return _db.Products
                 .OrderByDescending(a => a.OrderDetails.Count())
                 .Take(count)

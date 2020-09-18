@@ -70,6 +70,6 @@ namespace PartsUnlimited.Models
         public bool Processed { get; set; }
 
         [BindNever]
-        public List<OrderDetail> OrderDetails { get; set; }
+        public virtual List<OrderDetail> OrderDetails { get; set; }
     }
 }

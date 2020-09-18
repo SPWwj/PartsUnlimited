@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
 using PartsUnlimited.Areas.Admin;
 using System;
 using System.Collections.Generic;
@@ -94,7 +93,7 @@ namespace PartsUnlimited.Models
        /// <returns></returns>
        private static IConfigurationSection GetAdminRoleConfiguration(IServiceProvider serviceProvider)
         {
-            var appEnv = serviceProvider.GetService<IHostingEnvironment>();
+            var appEnv = serviceProvider.GetService<IWebHostEnvironment>();
 
             var builder = new ConfigurationBuilder().SetBasePath(appEnv.ContentRootPath)
                         .AddJsonFile("config.json")

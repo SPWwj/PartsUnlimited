@@ -30,8 +30,6 @@ namespace PartsUnlimited.Queries
 
             var results = await GetOrderQuery(username, queryStart, queryEnd, count).ToListAsync();
 
-            await FillOrderDetails(results);
-
             return new OrdersModel(results, username, queryStart, queryEnd, invalidOrderSearch, isAdminSearch);
         }
 
@@ -59,28 +57,7 @@ namespace PartsUnlimited.Queries
         {
             var orders = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
 
-            if (orders == null)
-            {
-                return null;
-            }
-            else
-            {
-                await FillOrderDetails(new[] { orders });
-                return orders;
-            }
-        }
-
-        private async Task FillOrderDetails(IEnumerable<Order> orders)
-        {
-            foreach (var order in orders)
-            {
-                order.OrderDetails = await _db.OrderDetails.Where(o => o.OrderId == order.OrderId).ToListAsync();
-
-                foreach (var details in order.OrderDetails)
-                {
-                    details.Product = await _db.Products.FirstOrDefaultAsync(o => o.ProductId == details.ProductId);
-                }
-            }
+            return orders;
         }
     }
 }

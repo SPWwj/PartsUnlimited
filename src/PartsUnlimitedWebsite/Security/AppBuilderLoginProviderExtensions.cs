@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+//using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,18 +14,18 @@ namespace PartsUnlimited.Security
 
         public static void AddLoginProviders(this IServiceCollection services, ILoginProviders loginProviders)
         {
-            if (loginProviders.Azure.Use)
-            {
-                services.AddAuthentication(options => {
-                                            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                                            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                                        })
-                        .AddCookie()
-                        .AddOpenIdConnect(options => {
-                            options.Authority = Configuration["auth:oidc:authority"];
-                            options.ClientId = Configuration["auth:oidc:clientid"];
-                        });
-            }
+            //if (loginProviders.Azure.Use)
+            //{
+            //    services.AddAuthentication(options => {
+            //                                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //                                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //                            })
+            //            .AddCookie()
+            //            .AddOpenIdConnect(options => {
+            //                options.Authority = Configuration["auth:oidc:authority"];
+            //                options.ClientId = Configuration["auth:oidc:clientid"];
+            //            });
+            //}
 
             if (loginProviders.Facebook.Use)
             {
@@ -54,30 +54,30 @@ namespace PartsUnlimited.Security
                         });
             }
 
-            if (loginProviders.Microsoft.Use)
-            {
-                //The MicrosoftAccount service has restrictions that prevent the use of http://localhost:5001/ for test applications.
-                //As such, here is how to change this sample to uses http://ktesting.com:5001/ instead.
+            //if (loginProviders.Microsoft.Use)
+            //{
+            //    //The MicrosoftAccount service has restrictions that prevent the use of http://localhost:5001/ for test applications.
+            //    //As such, here is how to change this sample to uses http://ktesting.com:5001/ instead.
 
-                //Edit the Project.json file and replace http://localhost:5001/ with http://ktesting.com:5001/.
+            //    //Edit the Project.json file and replace http://localhost:5001/ with http://ktesting.com:5001/.
 
-                //From an admin command console first enter:
-                // notepad C:\Windows\System32\drivers\etc\hosts
-                //and add this to the file, save, and exit (and reboot?):
-                // 127.0.0.1 ktesting.com
+            //    //From an admin command console first enter:
+            //    // notepad C:\Windows\System32\drivers\etc\hosts
+            //    //and add this to the file, save, and exit (and reboot?):
+            //    // 127.0.0.1 ktesting.com
 
-                //Then you can choose to run the app as admin (see below) or add the following ACL as admin:
-                // netsh http add urlacl url=http://ktesting:12345/ user=[domain\user]
+            //    //Then you can choose to run the app as admin (see below) or add the following ACL as admin:
+            //    // netsh http add urlacl url=http://ktesting:12345/ user=[domain\user]
 
-                //The sample app can then be run via:
-                // k web
+            //    //The sample app can then be run via:
+            //    // k web
 
-                services.AddAuthentication()
-                        .AddMicrosoftAccount(options => {
-                            options.ClientId = Configuration["auth:microsoft:clientid"];
-                            options.ClientSecret = Configuration["auth:microsoft:clientsecret"];
-                        });
-            }
+            //    services.AddAuthentication()
+            //            .AddMicrosoftAccount(options => {
+            //                options.ClientId = Configuration["auth:microsoft:clientid"];
+            //                options.ClientSecret = Configuration["auth:microsoft:clientsecret"];
+            //            });
+            //}
         }
     }
 }

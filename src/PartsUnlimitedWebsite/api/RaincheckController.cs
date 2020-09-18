@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace PartsUnlimited.WebApi
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class RaincheckController : Controller
     {

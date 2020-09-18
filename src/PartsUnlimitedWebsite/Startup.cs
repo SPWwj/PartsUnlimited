@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,6 @@ namespace PartsUnlimited
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public IServiceCollection service { get; private set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -30,25 +30,22 @@ namespace PartsUnlimited
 
         public void ConfigureServices(IServiceCollection services)
         {
-            service = services;
-            //If this type is present - we're on mono
-            var runningOnMono = Type.GetType("Mono.Runtime") != null;
-            var sqlConnectionString = Configuration[ConfigurationPath.Combine("ConnectionStrings", "DefaultConnectionString")];
-            var useInMemoryDatabase = string.IsNullOrWhiteSpace(sqlConnectionString);
-
-            if (useInMemoryDatabase || runningOnMono)
-            {
-                sqlConnectionString = "";
-            }
-
             // Add EF services to the services container
-            services.AddDbContext<PartsUnlimitedContext>();
+            services.AddDbContext<PartsUnlimitedContext>(options => {
+                options.UseLazyLoadingProxies();
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
+            // Associate IPartsUnlimitedContext and PartsUnlimitedContext with context
+            services.AddTransient<IPartsUnlimitedContext, PartsUnlimitedContext>();
 
             // Add Identity services to the services container
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<PartsUnlimitedContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication();
+            AppBuilderLoginProviderExtensions.AddLoginProviders(services, new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
 
             // Configure admin policies
             services.AddAuthorization(auth =>
@@ -83,11 +80,7 @@ namespace PartsUnlimited
                 return new ConfigurationApplicationInsightsSettings(Configuration.GetSection(ConfigurationPath.Combine("Keys", "ApplicationInsights")));
             });
 
-            services.AddApplicationInsightsTelemetry(Configuration);
-
-            // Associate IPartsUnlimitedContext and PartsUnlimitedContext with context
-            services.AddTransient<IPartsUnlimitedContext>(x => new PartsUnlimitedContext(sqlConnectionString));
-            services.AddTransient(x => new PartsUnlimitedContext(sqlConnectionString));
+            //services.AddApplicationInsightsTelemetry(Configuration);
 
             // We need access to these settings in a static extension method, so DI does not help us :(
             ContentDeliveryNetworkExtensions.Configuration = new ContentDeliveryNetworkConfiguration(Configuration.GetSection("CDN"));
@@ -101,6 +94,8 @@ namespace PartsUnlimited
             // Add session related services.
             //services.AddCaching();
             services.AddSession();
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
         private void SetupRecommendationService(IServiceCollection services)
@@ -127,7 +122,7 @@ namespace PartsUnlimited
             //Display custom error page in production when error occurs
             //During development use the ErrorPage middleware to display error information in the browser
             app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
+            app.UseMigrationsEndPoint();
 
             Configure(app);
         }
@@ -156,29 +151,21 @@ namespace PartsUnlimited
             // Add static files to the request pipeline
             app.UseStaticFiles();
 
+            app.UseRouting();
+
             // Add cookie-based authentication to the request pipeline
             app.UseAuthentication();
 
-            AppBuilderLoginProviderExtensions.AddLoginProviders(service, new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
-            // Add login providers (Microsoft/AzureAD/Google/etc).  This must be done after `app.UseIdentity()`
-            //app.AddLoginProviders( new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
+            app.UseAuthorization();
 
-            // Add MVC to the request pipeline
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapAreaControllerRoute(
                     name: "areaRoute",
-                    template: "{area:exists}/{controller}/{action}",
+                    areaName: AdminConstants.Area,
+                    pattern: $"/{AdminConstants.Area}/{{controller}}/{{action}}",
                     defaults: new { action = "Index" });
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" });
-
-                routes.MapRoute(
-                    name: "api",
-                    template: "{controller}/{id?}");
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

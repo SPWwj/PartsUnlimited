@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PartsUnlimited.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace PartsUnlimited
 {
@@ -12,7 +13,7 @@ namespace PartsUnlimited
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -33,15 +34,11 @@ namespace PartsUnlimited
             host.Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureAppConfiguration((hostContext, config) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    // delete all default configuration providers
-                    config.Sources.Clear();
-                    config.AddJsonFile("config.json", optional: true);
-                })
-                .Build();
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

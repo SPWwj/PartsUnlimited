@@ -16,6 +16,7 @@ using PartsUnlimited.Security;
 using PartsUnlimited.Telemetry;
 using PartsUnlimited.WebsiteConfiguration;
 using System;
+using System.Runtime.InteropServices;
 
 namespace PartsUnlimited
 {
@@ -33,7 +34,14 @@ namespace PartsUnlimited
             // Add EF services to the services container
             services.AddDbContext<PartsUnlimitedContext>(options => {
                 options.UseLazyLoadingProxies();
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                }
+                else
+                {
+                    options.UseSqlite();
+                }
             });
 
             // Associate IPartsUnlimitedContext and PartsUnlimitedContext with context

@@ -93,12 +93,7 @@ namespace PartsUnlimited.Models
        /// <returns></returns>
        private static IConfigurationSection GetAdminRoleConfiguration(IServiceProvider serviceProvider)
         {
-            var appEnv = serviceProvider.GetService<IWebHostEnvironment>();
-
-            var builder = new ConfigurationBuilder().SetBasePath(appEnv.ContentRootPath)
-                        .AddJsonFile("config.json")
-                        .AddEnvironmentVariables();
-            var configuration = builder.Build();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             return configuration.GetSection(AdminRoleSectionName);
         }
 
@@ -205,17 +200,19 @@ namespace PartsUnlimited.Models
                             Email = userName
                         };
 
-                        db.Orders.Add(order);
                         decimal total = 0;
+                        var orderDetails = new List<OrderDetail>();
                         foreach (var id in combination.Transactions)
                         {
                             var product = products.Single(x => x.RecommendationId == id);
                             var orderDetail = GetOrderDetail(product, order);
-                            db.OrderDetails.Add(orderDetail);
+                            orderDetails.Add(orderDetail);
                             total += orderDetail.UnitPrice;
                         }
 
+                        order.OrderDetails = orderDetails;
                         order.Total = total;
+                        db.Orders.Add(order);
                     }
                 }
 

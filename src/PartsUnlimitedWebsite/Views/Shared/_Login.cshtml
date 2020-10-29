@@ -1,4 +1,5 @@
-﻿@if (User.Identity.IsAuthenticated)
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@if (User.Identity.IsAuthenticated)
 {
     var isNtlm = User.Identity.AuthenticationType == "NTLM";
     
@@ -10,12 +11,7 @@
             @if (!isNtlm)
             {
             <li>
-                @*Either NTLM will be used or social authentication will be used. Based on the authentication schemes enabled remove an unused block.*@
-                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-                {
-                    @Html.AntiForgeryToken()
-                }
-                <a href="javascript:document.getElementById('logoutForm').submit()" >Log off</a>
+                <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Log out</a>
             </li>
             }
         </ul>
@@ -23,5 +19,5 @@
 }
 else
 {
-    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "login-link", @class = "head-link" })</li>
+    <li><a id ="login-link" class="head-link" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Log in</a></li>
 }

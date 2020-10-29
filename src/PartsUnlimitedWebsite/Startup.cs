@@ -1,12 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
 using PartsUnlimited.Areas.Admin;
 using PartsUnlimited.Models;
 using PartsUnlimited.Queries;
@@ -48,11 +52,13 @@ namespace PartsUnlimited
             services.AddTransient<IPartsUnlimitedContext, PartsUnlimitedContext>();
 
             // Add Identity services to the services container
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<PartsUnlimitedContext>()
-                .AddDefaultTokenProviders();
+            //services.AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<PartsUnlimitedContext>()
+            //    .AddDefaultTokenProviders();
 
-            services.AddAuthentication();
+            services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAdB2C"));
+
             AppBuilderLoginProviderExtensions.AddLoginProviders(services, new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
 
             // Configure admin policies
@@ -94,7 +100,8 @@ namespace PartsUnlimited
             ContentDeliveryNetworkExtensions.Configuration = new ContentDeliveryNetworkConfiguration(Configuration.GetSection("CDN"));
 
             // Add MVC services to the services container
-            services.AddMvc();
+            services.AddMvc()
+                .AddMicrosoftIdentityUI();
 
             //Add InMemoryCache
             services.AddSingleton<IMemoryCache, MemoryCache>();
@@ -168,6 +175,8 @@ namespace PartsUnlimited
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
                 endpoints.MapAreaControllerRoute(
                     name: "areaRoute",
                     areaName: AdminConstants.Area,

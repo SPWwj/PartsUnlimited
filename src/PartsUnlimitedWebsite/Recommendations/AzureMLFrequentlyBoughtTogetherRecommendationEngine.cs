@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
 using PartsUnlimited.Telemetry;
 using PartsUnlimited.WebsiteConfiguration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PartsUnlimited.Recommendations
@@ -43,7 +43,7 @@ namespace PartsUnlimited.Recommendations
             {
                 //The Azure ML service returns a set of numbers, which indicate the recommended product id
                 var response = await _client.GetStringAsync(uri);
-                AzureMLFrequentlyBoughtTogetherServiceResponse deserializedResponse = JsonConvert.DeserializeObject<AzureMLFrequentlyBoughtTogetherServiceResponse>(response);
+                AzureMLFrequentlyBoughtTogetherServiceResponse deserializedResponse = JsonSerializer.Deserialize<AzureMLFrequentlyBoughtTogetherServiceResponse>(response);
                 //When there is no recommendation, The Azure ML service returns a JSON object that does not contain ItemSet
                 var recommendation = deserializedResponse.ItemSet;
                 if (recommendation == null)

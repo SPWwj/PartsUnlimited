@@ -22,5 +22,12 @@ namespace PartsUnlimitedWebsite.Controllers
         {
             return View();
         }
+
+        [EnableCors]
+        [HttpGet("/Account/ResetPassword")]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
     }
 }

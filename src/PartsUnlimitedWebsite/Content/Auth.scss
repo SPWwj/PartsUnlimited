@@ -1,4 +1,9 @@
-﻿#api > form {
+﻿#api form {
+    display: flex;
+    flex-direction: column;
+}
+
+#api[data-name="SelfAsserted"] {
     display: flex;
     flex-direction: column;
 }
@@ -12,7 +17,17 @@
     display: block;
 }
 
-.entry-item > input {
+#attributeList ul {
+    list-style: none;
+    padding-left: 0px;
+}
+
+a[data-help] {
+    display: none;
+}
+
+
+#api input {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     box-sizing: border-box;
     margin: 0;

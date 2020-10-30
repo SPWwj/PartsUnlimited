@@ -1,5 +1,9 @@
-﻿<li>
-    <a href="@Url.Action("Index", "ShoppingCart")" title="@ViewBag.CartSummary" class="head-link" id="shopping-cart-link">
+﻿@{
+    var protocol = Context.Request.Scheme;
+    var host = Context.Request.Host;
+}
+<li>
+    <a href="@Url.Action("Index", "ShoppingCart", values: null, protocol: protocol, host: host.ToUriComponent(), fragment: null)" title="@ViewBag.CartSummary" class="head-link" id="shopping-cart-link">
 
         <div>Cart</div>
         @if (ViewBag.CartCount > 0)

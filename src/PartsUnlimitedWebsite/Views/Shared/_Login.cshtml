@@ -1,4 +1,8 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    var protocol = Context.Request.Scheme;
+    var host = Context.Request.Host;
+}
 @if (User.Identity.IsAuthenticated)
 {
 
@@ -15,5 +19,5 @@
 }
 else
 {
-    <li><a id ="login-link" class="head-link" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Log in</a></li>
+    <li><a id="login-link" class="head-link" asp-protocol="@protocol" asp-host="@host" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Log in</a></li>
 }

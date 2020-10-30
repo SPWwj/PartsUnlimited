@@ -2,6 +2,10 @@
 @using PartsUnlimited
 @using Microsoft.AspNetCore.Http.Extensions
 @using System.Runtime.InteropServices
+@using PartsUnlimited.Models
+@using PartsUnlimitedWebsite.RazorComponents
+ 
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     var protocol = Context.Request.Scheme;
     var host = Context.Request.Host;
@@ -56,7 +60,7 @@
                                     </div>
                                 </li>
                                 <li><a href="@Url.Action("Index", "Home", values: null, protocol: protocol, host: hostComponent)" class="head-link" id="home-link">Home</a></li>
-                                @await Component.InvokeAsync("CartSummary")
+                                <component render-mode="Static" type="typeof(ShoppingCartWidget)" param-CartUrl="@Url.Action("Index", "ShoppingCart", values: null, protocol: protocol, host: hostComponent, fragment: null)" param-ShoppingCartId="@ShoppingCart.GetCartId(Context)" />
                                 @await Html.PartialAsync("_AdminMenu")
                                 @await Html.PartialAsync("_Login")
                                 <li class="dropdown visible-xs">

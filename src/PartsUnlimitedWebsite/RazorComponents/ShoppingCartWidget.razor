@@ -1,0 +1,44 @@
+﻿@using PartsUnlimited.Models
+@using System.Linq;
+@using Microsoft.EntityFrameworkCore;
+
+@inherits OwningComponentBase<IPartsUnlimitedContext>
+
+<li>
+    <a href="@CartUrl" title="@_cartSummary" class="head-link" id="shopping-cart-link">
+
+        <div>Cart</div>
+        @if (_cartCount > 0)
+        {
+            <span class="hidden-xs" id="cart-count">@_cartCount</span>
+        }
+    </a>
+</li>
+
+@code {
+
+    [Parameter] public string ShoppingCartId { get; set; }
+
+    [Parameter] public string CartUrl { get; set; }
+
+    private List<CartSummary> _cartItems = new List<CartSummary>();
+    private int _cartCount;
+    private string _cartSummary;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _cartItems = await Service.CartItems.Where(cart => cart.CartId == ShoppingCartId)
+            .Select(a => new CartSummary { Title = a.Product.Title, Count = a.Count })
+            .OrderBy(x => x.Title)
+            .ToListAsync();
+
+        _cartCount = _cartItems.Select(i => i.Count).Sum();
+        _cartSummary = string.Join("\n", _cartItems.Distinct());
+    }
+
+    private record CartSummary
+    {
+        public string Title;
+        public int Count;
+    }
+}

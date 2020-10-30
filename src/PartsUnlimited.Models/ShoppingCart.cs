@@ -22,7 +22,7 @@ namespace PartsUnlimited.Models
         public static ShoppingCart GetCart(IPartsUnlimitedContext db, HttpContext context)
         {
             var cart = new ShoppingCart(db);
-            cart.ShoppingCartId = cart.GetCartId(context);
+            cart.ShoppingCartId = GetCartId(context);
             return cart;
         }
 
@@ -158,7 +158,7 @@ namespace PartsUnlimited.Models
         }
 
         // We're using HttpContextBase to allow access to cookies.
-        public string GetCartId(HttpContext context)
+        public static string GetCartId(HttpContext context)
         {
             var sessionCookie = context.Request.Cookies["Session"];
             string cartId = null;

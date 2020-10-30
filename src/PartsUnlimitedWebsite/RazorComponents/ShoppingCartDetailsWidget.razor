@@ -1,0 +1,86 @@
+﻿@using PartsUnlimited.ViewModels
+
+<div id="shopping-cart-page">
+    <section>
+        <h2>Review your Cart</h2>
+        <div id="update-message">
+        </div>
+        @if (Model.CartCount > 0)
+        {
+            <div id="cart-summary">
+                <div class="hidden-xs cart-summary-header">
+                    <div class="row">
+                        <div class="col-sm-8 col-md-8 no-gutter-md-left no-gutter-sm-left">Product Description</div>
+                        <div class="col-sm-2 col-md-2 text-center">Quantity</div>
+                        <div class="col-sm-2 col-md-2 text-center">Price</div>
+                    </div>
+                </div>
+
+                @foreach (var item in Model.CartItems)
+                {
+                    <div id="row-@item.CartItemId" class="cart-item">
+                        <div class="row">
+                            <div class="col-xs-1 no-gutter-xs-right text-center-xs col-sm-2 col-sm-push-8 text-center-sm">
+                                <div class="item-label item-inventory">@item.Count</div>
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-sm-pull-2 col-md-2"><img src="/images/@item.Product.ProductArtUrl" /></div>
+                            <div class="col-xs-6 col-sm-2 col-sm-push-5 text-center-sm col-md-push-6">
+                                <div class="visible-xs item-label">@item.Product.Title</div>
+                                <div class="item-price">@item.Product.Price.ToString("C")</div>
+                            </div>
+                            @* data-url='@Url.Content("~/ShoppingCart/RemoveFromCart")' *@
+                            <div class="visible-xs col-xs-2 text-right no-gutter-xs-left">
+                                <a href="#" class="remove-link" data-id="@item.CartItemId">
+                                    <img src="/images/remove_icon.png" />
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-5 col-sm-pull-4 col-md-6 description">
+                                <div class="hidden-xs">
+                                    @* @Html.ActionLink(item.Product.Title, "Details", "Store", new { id = item.ProductId }, null) *@
+                                    <strong><a href="@string.Format(_productDetailslinkTemplate, item.ProductId)">@item.Product.Title</a></strong>
+                                </div>
+                                <div class="visible-xs item-label">Description</div>
+                                <p class="text-content">@item.Product.Description</p>
+                            </div>
+                            <div class="hidden-xs remove-cart-item">
+                                @* data-url='@Url.Content("~/ShoppingCart/RemoveFromCart")' *@
+                                <a href="#" class="remove-link btn" data-id="@item.CartItemId">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <OrderCostSummaryWidget Model="Model.OrderCostSummary" />
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-6 col-md-4 col-md-offset-8">
+                        <div>
+                            <a href="@Checkout" class="btn pull-right checkout">Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model.CartCount <= 0)
+        {
+            <h4 id="empty-cart">
+                Your cart is currently empty
+            </h4>
+        }
+    </section>
+</div>
+@code {
+    [Parameter] public ShoppingCartViewModel Model { get; set; }
+
+    [Parameter] public string Checkout { get; set; }
+
+    [Parameter] public string DetailsTemplate { get; set; }
+
+    private string _productDetailslinkTemplate = null;
+
+    protected override void OnInitialized()
+    {
+        _productDetailslinkTemplate = DetailsTemplate.Replace("$0", "{0}");
+    }
+}

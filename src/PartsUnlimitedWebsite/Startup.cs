@@ -26,6 +26,7 @@ using PartsUnlimited.WebsiteConfiguration;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using PartsUnlimitedWebsite.RazorComponents;
 
 namespace PartsUnlimited
 {
@@ -55,7 +56,6 @@ namespace PartsUnlimited
 
             // Associate IPartsUnlimitedContext and PartsUnlimitedContext with context
             services.AddTransient<IPartsUnlimitedContext, PartsUnlimitedContext>();
-
             // Add Identity services to the services container
             //services.AddIdentity<ApplicationUser, IdentityRole>()
             //    .AddEntityFrameworkStores<PartsUnlimitedContext>()
@@ -87,6 +87,8 @@ namespace PartsUnlimited
 
             SetupRecommendationService(services);
 
+            services.AddScoped<ShoppingCartNotificationService>();
+
             services.AddScoped<IWebsiteOptions>(p =>
             {
                 var telemetry = p.GetRequiredService<ITelemetryProvider>();
@@ -107,6 +109,8 @@ namespace PartsUnlimited
             // Add MVC services to the services container
             services.AddMvc()
                 .AddMicrosoftIdentityUI();
+
+            services.AddServerSideBlazor();
 
             services.AddCors(cors => cors.AddDefaultPolicy(new CorsPolicyBuilder("partsunlimitednetconf2020.b2clogin.com").AllowAnyOrigin().Build()));
 
@@ -194,6 +198,7 @@ namespace PartsUnlimited
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
                 endpoints.MapAreaControllerRoute(

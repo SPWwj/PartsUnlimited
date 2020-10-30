@@ -1,10 +1,14 @@
 ﻿@using PartsUnlimited.ViewModels
+@using PartsUnlimited.Models
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.DependencyInjection; 
+@using Microsoft.AspNetCore.Components.Web
 
+@inject ShoppingCartNotificationService Notifications
+@inherits OwningComponentBase<IPartsUnlimitedContext>
 <div id="shopping-cart-page">
     <section>
         <h2>Review your Cart</h2>
-        <div id="update-message">
-        </div>
         @if (Model.CartCount > 0)
         {
             <div id="cart-summary">
@@ -28,25 +32,22 @@
                                 <div class="visible-xs item-label">@item.Product.Title</div>
                                 <div class="item-price">@item.Product.Price.ToString("C")</div>
                             </div>
-                            @* data-url='@Url.Content("~/ShoppingCart/RemoveFromCart")' *@
                             <div class="visible-xs col-xs-2 text-right no-gutter-xs-left">
-                                <a href="#" class="remove-link" data-id="@item.CartItemId">
+                                <button class="remove-link" @onclick="() => RemoveFromCart(item.CartItemId)">
                                     <img src="/images/remove_icon.png" />
-                                </a>
+                                </button>
                             </div>
                             <div class="col-xs-12 col-sm-5 col-sm-pull-4 col-md-6 description">
                                 <div class="hidden-xs">
-                                    @* @Html.ActionLink(item.Product.Title, "Details", "Store", new { id = item.ProductId }, null) *@
                                     <strong><a href="@string.Format(_productDetailslinkTemplate, item.ProductId)">@item.Product.Title</a></strong>
                                 </div>
                                 <div class="visible-xs item-label">Description</div>
                                 <p class="text-content">@item.Product.Description</p>
                             </div>
                             <div class="hidden-xs remove-cart-item">
-                                @* data-url='@Url.Content("~/ShoppingCart/RemoveFromCart")' *@
-                                <a href="#" class="remove-link btn" data-id="@item.CartItemId">
+                                <button @onclick="() => RemoveFromCart(item.CartItemId)" class="remove-link btn">
                                     Remove
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -71,16 +72,80 @@
     </section>
 </div>
 @code {
-    [Parameter] public ShoppingCartViewModel Model { get; set; }
+    [Parameter] public ShoppingCartViewModel2 Model { get; set; }
 
     [Parameter] public string Checkout { get; set; }
 
     [Parameter] public string DetailsTemplate { get; set; }
+
+    [Parameter] public string ShoppingCartId { get; set; }
 
     private string _productDetailslinkTemplate = null;
 
     protected override void OnInitialized()
     {
         _productDetailslinkTemplate = DetailsTemplate.Replace("$0", "{0}");
+    }
+
+    public async Task RemoveFromCart(int id)
+    {
+        using var context = ScopedServices.GetRequiredService<IPartsUnlimitedContext>();
+        var cart = new ShoppingCart(context, ShoppingCartId);
+        // Get the name of the album to display confirmation
+        var cartItem = await context.CartItems
+            .Where(item => item.CartItemId == id)
+            .Include(c => c.Product)
+            .SingleOrDefaultAsync();
+
+        int itemCount;
+        if (cartItem != null)
+        {
+            // Remove from cart
+            itemCount = cart.RemoveFromCart(id);
+
+            await context.SaveChangesAsync(default);
+
+            var item = Model.CartItems.Single(c => c.CartItemId == id);
+            if (itemCount == 0)
+            {
+                Model.CartItems.Remove(item);
+            }
+            else
+            {
+                item.Count--;
+            }
+        }
+        else
+        {
+            itemCount = 0;
+        }
+
+        Model.OrderCostSummary.CartTotal = cart.GetTotal().ToString();
+        // Display the confirmation message
+
+        var items = Model.CartItems;
+        var itemsCount = items.Sum(x => x.Count);
+        var subTotal = items.Sum(x => x.Count * x.Product.Price);
+        var shipping = itemsCount * (decimal)5.00;
+        var tax = (subTotal + shipping) * (decimal)0.05;
+        var total = subTotal + shipping + tax;
+
+        Model.OrderCostSummary = new OrderCostSummary
+        {
+            CartSubTotal = subTotal.ToString("C"),
+            CartShipping = shipping.ToString("C"),
+            CartTax = tax.ToString("C"),
+            CartTotal = total.ToString("C")
+        };
+
+        await Notifications.OnItemRemoved();
+        //var results = new ShoppingCartRemoveViewModel
+        //{
+        //    Message = message,
+        //    CartTotal = cart.GetTotal().ToString(),
+        //    CartCount = cart.GetCount(),
+        //    ItemCount = itemCount,
+        //    DeleteId = id
+        //};
     }
 }

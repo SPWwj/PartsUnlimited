@@ -1,9 +1,11 @@
 ﻿@using PartsUnlimited.Models
 @using System.Linq;
 @using Microsoft.EntityFrameworkCore;
+@using Microsoft.Extensions.DependencyInjection;
 
-@inherits OwningComponentBase<IPartsUnlimitedContext>
-
+@inject ShoppingCartNotificationService Notifications
+@inherits OwningComponentBase
+@implements IDisposable
 <li>
     <a href="@CartUrl" title="@_cartSummary" class="head-link" id="shopping-cart-link">
 
@@ -24,10 +26,18 @@
     private List<CartSummary> _cartItems = new List<CartSummary>();
     private int _cartCount;
     private string _cartSummary;
+    private IDisposable _subscription;
 
-    protected async override Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        _cartItems = await Service.CartItems.Where(cart => cart.CartId == ShoppingCartId)
+        _subscription = Notifications.Register(NotifyStateHasChanged);
+        return UpdateCart();
+    }
+
+    private async Task UpdateCart()
+    {
+        var context = ScopedServices.GetRequiredService<IPartsUnlimitedContext>();
+        _cartItems = await context.CartItems.Where(cart => cart.CartId == ShoppingCartId)
             .Select(a => new CartSummary { Title = a.Product.Title, Count = a.Count })
             .OrderBy(x => x.Title)
             .ToListAsync();
@@ -36,9 +46,16 @@
         _cartSummary = string.Join("\n", _cartItems.Distinct());
     }
 
+    private Task NotifyStateHasChanged() => InvokeAsync(async () => { await UpdateCart(); StateHasChanged(); });
+
     private record CartSummary
     {
         public string Title;
         public int Count;
+    }
+
+    public void Dispose()
+    {
+        _subscription.Dispose();
     }
 }

@@ -5,9 +5,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model PartsUnlimited.ViewModels.ShoppingCartViewModel
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewBag.Title = "Shopping Cart";
 }
 
-<component render-mode="Static" type="typeof(ShoppingCartDetailsWidget)" param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })" param-model="Model" param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />
+<component render-mode="ServerPrerendered" type="typeof(ShoppingCartDetailsWidget)" param-ShoppingCartId="ShoppingCart.GetCartId(Context)" param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })" param-model="PartsUnlimited.ViewModels.ShoppingCartViewModel2.From(Model)" param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />

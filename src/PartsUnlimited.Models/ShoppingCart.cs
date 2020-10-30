@@ -19,6 +19,12 @@ namespace PartsUnlimited.Models
             _db = db;
         }
 
+        public ShoppingCart(IPartsUnlimitedContext db, string shoppingCartId)
+        {
+            _db = db;
+            ShoppingCartId = shoppingCartId;
+        }
+
         public static ShoppingCart GetCart(IPartsUnlimitedContext db, HttpContext context)
         {
             var cart = new ShoppingCart(db);

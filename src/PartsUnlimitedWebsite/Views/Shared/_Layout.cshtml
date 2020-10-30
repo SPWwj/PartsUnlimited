@@ -1,13 +1,19 @@
 ﻿@using System.Globalization
 @using PartsUnlimited
+@using Microsoft.AspNetCore.Http.Extensions
 @using System.Runtime.InteropServices
-
+@{
+    var protocol = Context.Request.Scheme;
+    var host = Context.Request.Host;
+    var pBase = Context.Request.PathBase;
+    var hostComponent = Context.Request.Host.ToUriComponent();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="Icon" href="/images/favicon.ico" />
+    <link rel="Icon" href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/images/favicon.ico")" />
     <title>@ViewBag.Title – Parts Unlimited</title>
     @await Component.InvokeAsync("Configuration")
 
@@ -18,15 +24,15 @@
             <div class="container">
                 <div class="primary-menu">
                     <div class="pull-left logo">
-                        <a class="block logo-image" href="@Url.Action("Index", "Home")">
-                            <img src="/images/unlimited_logo.png" />
+                        <a class="block logo-image" href="@Url.Action("Index", "Home", values: null, protocol: protocol, host: hostComponent)">
+                            <img src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/images/unlimited_logo.png")" />
                         </a>
-                        <a class="block" href="@Url.Action("Index", "Home")">
+                        <a class="block" href="@Url.Action("Index", "Home", values: null, protocol: protocol, host: hostComponent)">
                             <h1>Parts Unlimited</h1>
                             <h2>a Fabrikam subsidiary</h2>
                         </a>
                         <div class="visible-xs cart">
-                            <a href="@Url.Action("Index", "ShoppingCart")" class="head-link" id="shopping-cart-link"></a>
+                            <a href="@Url.Action("Index", "ShoppingCart", values: null, protocol: protocol, host: hostComponent)" class="head-link" id="shopping-cart-link"></a>
                         </div>
                     </div>
                     <div class="pull-right navigation">
@@ -49,12 +55,12 @@
                                         }
                                     </div>
                                 </li>
-                                <li><a href="@Url.Action("Index", "Home")" class="head-link" id="home-link">Home</a></li>
+                                <li><a href="@Url.Action("Index", "Home", values: null, protocol: protocol, host: hostComponent)" class="head-link" id="home-link">Home</a></li>
                                 @await Component.InvokeAsync("CartSummary")
                                 @await Html.PartialAsync("_AdminMenu")
                                 @await Html.PartialAsync("_Login")
                                 <li class="dropdown visible-xs">
-                                    <a href="@Url.Action("Index", "Store")" class="dropdown-toggle head-link" data-toggle="dropdown">Categories&nbsp;<b class="caret"></b></a>
+                                    <a href="@Url.Action("Index", "Store", values: null, protocol: protocol, host: hostComponent)" class="dropdown-toggle head-link" data-toggle="dropdown">Categories&nbsp;<b class="caret"></b></a>
                                     <ul class="dropdown-menu">
                                         @await Component.InvokeAsync("CategoryMenu")
                                     </ul>
@@ -94,16 +100,16 @@
                     <div class="col-md-3">
                         <h4>Site Menu</h4>
                         <ul>
-                            <li><a href="@Url.Action("Index", "Home")">Home</a></li>
-                            <li><a href="@Url.Action("Index", "Store")">Browse</a></li>
+                            <li><a href="@Url.Action("Index", "Home", values: null, protocol: protocol, host: hostComponent)">Home</a></li>
+                            <li><a href="@Url.Action("Index", "Store", values: null, protocol: protocol, host: hostComponent)">Browse</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3">
                         <h4>Account</h4>
                         <ul>
-                            <li>@Html.ActionLink("Manage Account", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</li>
-                            <li>@Html.ActionLink("Shopping Cart", "Index", "ShoppingCart")</li>
-                            <li>@Html.ActionLink("View Orders", "Index", "Orders", new { Area = string.Empty })</li>
+                            <li>@Html.ActionLink("Manage Account", "Index", "Manage", routeValues: null, protocol: protocol, hostname: hostComponent, fragment: null, htmlAttributes: new { title = "Manage" })</li>
+                            <li>@Html.ActionLink("Shopping Cart", "Index", "ShoppingCart", routeValues: null, protocol: protocol, hostname: hostComponent, fragment: null, htmlAttributes: null)</li>
+                            <li>@Html.ActionLink("View Orders", "Index", "Orders", routeValues: new { Area = string.Empty }, protocol: protocol, hostname: hostComponent, fragment: null, htmlAttributes: null)</li>
                         </ul>
                     </div>
                     <div class="col-md-3">
@@ -122,7 +128,7 @@
                         </ul>
                         <p>Deploy to Azure</p>
                         <a class="deploy-azure">
-                            <img src="/images/deploy_button.png" />
+                            <img src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/images/deploy_button.png")" />
                         </a>
                     </div>
                 </div>
@@ -147,16 +153,17 @@
             </div>
         </div>
     </footer>
-    <link href="/Content/Site.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/Home.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/Account.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/ShoppingCart.css" rel="stylesheet" type="text/css" />
-    <link href="/Content/Store.css" rel="stylesheet" type="text/css" />
-    <link href="/lib/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
-    <script src="~/lib/jquery/jquery.js"></script>
-    <script src="~/lib/jquery-zoom/jquery.zoom.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/lib/respond/respond.src.js"></script>
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Home.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Account.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/ShoppingCart.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Store.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Auth.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/css/bootstrap.css")" rel="stylesheet" type="text/css" />
+    <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery/jquery.js")"></script>
+    <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery-zoom/jquery.zoom.js")"></script>
+    <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/js/bootstrap.min.js")"></script>
+    <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/respond/respond.src.js")"></script>
     @RenderSection("scripts", required: false)
 
 </body>

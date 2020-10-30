@@ -3,6 +3,8 @@
 
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
 using PartsUnlimited.Areas.Admin;
 using PartsUnlimited.Models;
 using PartsUnlimited.Queries;
@@ -20,6 +24,7 @@ using PartsUnlimited.Security;
 using PartsUnlimited.Telemetry;
 using PartsUnlimited.WebsiteConfiguration;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace PartsUnlimited
@@ -103,6 +108,8 @@ namespace PartsUnlimited
             services.AddMvc()
                 .AddMicrosoftIdentityUI();
 
+            services.AddCors(cors => cors.AddDefaultPolicy(new CorsPolicyBuilder("partsunlimitednetconf2020.b2clogin.com").AllowAnyOrigin().Build()));
+
             //Add InMemoryCache
             services.AddSingleton<IMemoryCache, MemoryCache>();
 
@@ -132,36 +139,48 @@ namespace PartsUnlimited
 
         //This method is invoked when ASPNETCORE_ENVIRONMENT is 'Development' or is not defined
         //The allowed values are Development,Staging and Production
-        public void ConfigureDevelopment(IApplicationBuilder app)
+        public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             //Display custom error page in production when error occurs
             //During development use the ErrorPage middleware to display error information in the browser
             app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
 
-            Configure(app);
+            Configure(app, environment);
         }
 
         //This method is invoked when ASPNETCORE_ENVIRONMENT is 'Staging'
         //The allowed values are Development,Staging and Production
-        public void ConfigureStaging(IApplicationBuilder app)
+        public void ConfigureStaging(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             app.UseExceptionHandler("/Home/Error");
-            Configure(app);
+            Configure(app, environment);
         }
 
         //This method is invoked when ASPNETCORE_ENVIRONMENT is 'Production'
         //The allowed values are Development,Staging and Production
-        public void ConfigureProduction(IApplicationBuilder app)
+        public void ConfigureProduction(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             app.UseExceptionHandler("/Home/Error");
-            Configure(app);
+            Configure(app, environment);
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             // Configure Session.
             app.UseSession();
+
+            app.MapWhen(p => File.Exists(Path.Combine(environment.WebRootPath, p.Request.Path.Value.TrimStart('/'))), sub =>
+            {
+                sub.Use((ctx, nxt) =>
+                {
+                    ctx.Response.Headers.Add("Cache-Control", new StringValues(new[] { "no-cache", "no-store", "must-revalidate" }));
+                    return nxt();
+                });
+
+                sub.UseCors();
+                sub.UseStaticFiles();
+            });
 
             // Add static files to the request pipeline
             app.UseStaticFiles();
@@ -170,8 +189,8 @@ namespace PartsUnlimited
 
             // Add cookie-based authentication to the request pipeline
             app.UseAuthentication();
-
             app.UseAuthorization();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

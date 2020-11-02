@@ -34,7 +34,7 @@ namespace PartsUnlimited.ViewModels
                         Description = ci.Product.Description,
                         Price = ci.Product.Price,
                         ProductArtUrl = ci.Product.ProductArtUrl,
-                        Title = ci.Product.ProductArtUrl
+                        Title = ci.Product.Title
                     }
             }).ToList();
 

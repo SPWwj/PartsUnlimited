@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartsUnlimited.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartsUnlimited.Models", "src\PartsUnlimited.Models\PartsUnlimited.Models.csproj", "{C6E18287-B905-4685-9653-515ED914990B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartsUnlimited.Shared", "PartsUnlimited.Shared\PartsUnlimited.Shared.csproj", "{7B5A5301-6492-4828-9FF7-A0D520C8B1F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C6E18287-B905-4685-9653-515ED914990B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6E18287-B905-4685-9653-515ED914990B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6E18287-B905-4685-9653-515ED914990B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5A5301-6492-4828-9FF7-A0D520C8B1F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5A5301-6492-4828-9FF7-A0D520C8B1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5A5301-6492-4828-9FF7-A0D520C8B1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5A5301-6492-4828-9FF7-A0D520C8B1F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿@using PartsUnlimited.ViewModels
+﻿@using PartsUnlimited.Shared
 @using PartsUnlimited.Models
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.DependencyInjection; 
@@ -72,7 +72,7 @@
     </section>
 </div>
 @code {
-    [Parameter] public ShoppingCartViewModel2 Model { get; set; }
+    [Parameter] public ShoppingCartModel Model { get; set; }
 
     [Parameter] public string Checkout { get; set; }
 

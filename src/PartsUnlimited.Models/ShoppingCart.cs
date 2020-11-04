@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PartsUnlimited.Models
 {
@@ -88,6 +89,11 @@ namespace PartsUnlimited.Models
         {
             var cartItems = _db.CartItems.Where(cart => cart.CartId == ShoppingCartId);
             _db.CartItems.RemoveRange(cartItems.ToArray());
+        }
+
+        public Task<List<CartItem>> GetCartItemsAsync()
+        {
+            return _db.CartItems.Where(cart => cart.CartId == ShoppingCartId).ToListAsync();
         }
 
         public List<CartItem> GetCartItems()

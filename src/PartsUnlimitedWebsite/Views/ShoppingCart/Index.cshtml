@@ -1,7 +1,7 @@
 ﻿@using PartsUnlimited
 @using PartsUnlimited.Models
 @using PartsUnlimited.ViewModels;
-@using PartsUnlimitedWebsite.RazorComponents
+@using PartsUnlimited.Client
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -10,9 +10,8 @@
     ViewBag.Title = "Shopping Cart";
 }
 
-<component render-mode="ServerPrerendered"
+<component render-mode="WebAssembly"
            type="typeof(ShoppingCartDetailsWidget)"
            param-ShoppingCartId="ShoppingCart.GetCartId(Context)"
            param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })"
-           param-model="ShoppingCartViewModel.From(Model)"
            param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />

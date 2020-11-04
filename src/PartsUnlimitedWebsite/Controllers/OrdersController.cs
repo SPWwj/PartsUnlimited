@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PartsUnlimited.Queries;
+using PartsUnlimited.Shared;
 using PartsUnlimited.Telemetry;
 using PartsUnlimited.ViewModels;
 using System;

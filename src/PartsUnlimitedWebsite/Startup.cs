@@ -27,7 +27,8 @@ using PartsUnlimited.WebsiteConfiguration;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using PartsUnlimitedWebsite.RazorComponents;
+using PartsUnlimited.Client;
+using PartsUnlimitedWebsite.Services;
 
 namespace PartsUnlimited
 {
@@ -93,6 +94,7 @@ namespace PartsUnlimited
             SetupRecommendationService(services);
 
             services.AddScoped<ShoppingCartNotificationService>();
+            services.AddScoped<ShoppingCartService>();
 
             services.AddScoped<IWebsiteOptions>(p =>
             {
@@ -192,6 +194,7 @@ namespace PartsUnlimited
             });
 
             // Add static files to the request pipeline
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseRouting();

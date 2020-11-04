@@ -14,156 +14,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PartsUnlimited.Shared;
+using PartsUnlimitedWebsite.Services;
+using System;
 
 namespace PartsUnlimited.Controllers
 {
-    [Authorize(JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(JwtBearerDefaults.AuthenticationScheme)]
+    [ApiController]
     public class ShoppingCartApiController : Controller
     {
-        private readonly IPartsUnlimitedContext _db;
+        private readonly ShoppingCartService _cartService;
         private readonly ITelemetryProvider _telemetry;
-        private readonly IAntiforgery _antiforgery;
 
-        public ShoppingCartController(IPartsUnlimitedContext context, ITelemetryProvider telemetryProvider, IAntiforgery antiforgery)
+        public ShoppingCartApiController(ShoppingCartService cartService, ITelemetryProvider telemetryProvider)
         {
-            _db = context;
+            _cartService = cartService;
             _telemetry = telemetryProvider;
-            _antiforgery = antiforgery;
         }
 
-        //
-        // GET: /ShoppingCart/
-
-        public IActionResult Index()
+        [HttpGet("api/ShoppingCart")]
+        public async Task<IActionResult> Get()
         {
-            var cart = ShoppingCart.GetCart(_db, HttpContext);
-
-            var items = cart.GetCartItems();
-            var itemsCount = items.Sum(x => x.Count);
-            var subTotal = items.Sum(x => x.Count * x.Product.Price);
-            var shipping = itemsCount * (decimal)5.00;
-            var tax = (subTotal + shipping) * (decimal)0.05;
-            var total = subTotal + shipping + tax;
-
-            var costSummary = new OrderCostSummary
-            {
-                CartSubTotal = subTotal.ToString("C"),
-                CartShipping = shipping.ToString("C"),
-                CartTax = tax.ToString("C"),
-                CartTotal = total.ToString("C")
-            };
-
-
-            // Set up our ViewModel
-            var viewModel = new ShoppingCartViewModel
-            {
-                CartItems = items,
-                CartCount = itemsCount,
-                OrderCostSummary = costSummary
-            };
+            var shoppingCartId = ShoppingCart.GetCartId(HttpContext);
+            var cartModel = await _cartService.GetShoppingCartDetails(shoppingCartId);
 
             // Track cart review event with measurements
             _telemetry.TrackTrace("Cart/Server/Index");
 
-            // Return the view
-            return Ok(ShoppingCartViewModel.ToModel(viewModel));
+            return Ok(cartModel);
         }
 
-        //
-        // GET: /ShoppingCart/AddToCart/5
-
-        public async Task<IActionResult> AddToCart(int id)
+        [HttpGet("api/ShoppingCart/Summary")]
+        public async Task<IActionResult> GetSummary()
         {
-            // Retrieve the product from the database
-            var addedProduct = _db.Products
-                .Single(product => product.ProductId == id);
+            var shoppingCartId = ShoppingCart.GetCartId(HttpContext);
+            var cartSummary = await _cartService.GetShoppingCartSummary(shoppingCartId);
 
-            // Start timer for save process telemetry
-            var startTime = System.DateTime.Now;
-
-            // Add it to the shopping cart
-            var cart = ShoppingCart.GetCart(_db, HttpContext);
-
-            cart.AddToCart(addedProduct);
-
-            await _db.SaveChangesAsync(HttpContext.RequestAborted);
-
-            // Trace add process
-            var measurements = new Dictionary<string, double>()
-            {
-                {"ElapsedMilliseconds", System.DateTime.Now.Subtract(startTime).TotalMilliseconds }
-            };
-            _telemetry.TrackEvent("Cart/Server/Add", null, measurements);
-
-            // Go back to the main store page for more shopping
-            return RedirectToAction("Index");
+            return Ok(cartSummary);
         }
 
-        //
-        // AJAX: /ShoppingCart/RemoveFromCart/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveFromCart(Request request)
+        [HttpDelete("api/ShoppingCart/Remove/{id}")]
+        public async Task<IActionResult> RemoveFromCart(int id, CancellationToken cancellationToken)
         {
-            // Retrieve the current user's shopping cart
-            var cart = ShoppingCart.GetCart(_db, HttpContext);
+            var cartId = ShoppingCart.GetCartId(HttpContext);
 
-            // Get the name of the album to display confirmation
-            var cartItem = await _db.CartItems
-                .Where(item => item.CartItemId == request.Id)
-                .Include(c => c.Product)
-                .SingleOrDefaultAsync();
-
-            string message;
-            int itemCount;
-            if (cartItem != null)
+            try
             {
-                // Remove from cart
-                itemCount = cart.RemoveFromCart(request.Id);
-
-                await _db.SaveChangesAsync(request.CancellationToken);
-
-                string removed = (itemCount > 0) ? " 1 copy of " : string.Empty;
-                message = removed + cartItem.Product.Title + " has been removed from your shopping cart.";
+                await _cartService.RemoveFromCart(cartId, id);
             }
-            else
+            catch
             {
-                itemCount = 0;
-                message = "Could not find this item, nothing has been removed from your shopping cart.";
+                return BadRequest();
             }
 
-            // Display the confirmation message
-
-            var results = new ShoppingCartRemoveViewModel
-            {
-                Message = message,
-                CartTotal = cart.GetTotal().ToString(),
-                CartCount = cart.GetCount(),
-                ItemCount = itemCount,
-                DeleteId = request.Id
-            };
-
-            return Json(results);
+            return Ok();
         }
-
-        private static ShoppingCartModel From(ShoppingCartViewModel source) => new ShoppingCartModel()
-        {
-            CartItems = source.CartItems.Select(ci => new CartItemModel
-            {
-                CartItemId = ci.CartItemId,
-                ProductId = ci.ProductId,
-                Count = ci.Count,
-                Product = new ProductModel
-                {
-                    Description = ci.Product.Description,
-                    Price = ci.Product.Price,
-                    ProductArtUrl = ci.Product.ProductArtUrl,
-                    Title = ci.Product.Title
-                }
-            }).ToList();
-
-            CartCount = source.CartCount;
-            OrderCostSummary = source.OrderCostSummary;
-        };
     }
 }

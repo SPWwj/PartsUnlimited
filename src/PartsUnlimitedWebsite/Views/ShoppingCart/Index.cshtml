@@ -11,7 +11,7 @@
 }
 
 <component render-mode="WebAssembly"
-           type="typeof(ShoppingCartDetailsWidget)"
+           type="typeof(ProtectedShoppingCartDetailsWidget)"
            param-ShoppingCartId="ShoppingCart.GetCartId(Context)"
            param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })"
            param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />

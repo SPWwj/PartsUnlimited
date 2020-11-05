@@ -34,6 +34,7 @@ namespace PartsUnlimited.Controllers
         }
 
         [HttpGet("api/ShoppingCart")]
+        [Authorize(AuthenticationSchemes = "JwtBearer")]
         public async Task<IActionResult> Get()
         {
             var shoppingCartId = ShoppingCart.GetCartId(HttpContext);
@@ -55,6 +56,7 @@ namespace PartsUnlimited.Controllers
         }
 
         [HttpDelete("api/ShoppingCart/Remove/{id}")]
+        [Authorize(AuthenticationSchemes = "JwtBearer")]
         public async Task<IActionResult> RemoveFromCart(int id, CancellationToken cancellationToken)
         {
             var cartId = ShoppingCart.GetCartId(HttpContext);

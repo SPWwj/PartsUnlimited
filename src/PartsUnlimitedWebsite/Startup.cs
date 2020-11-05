@@ -64,8 +64,8 @@ namespace PartsUnlimited
             //    .AddDefaultTokenProviders();
 
             // The authentication scheme will be overriden by the one below, but for now, leave it as it is.
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAdB2CAPI"));
+            services.AddAuthentication()
+                .AddMicrosoftIdentityWebApi(Configuration, "AzureAdB2CAPI", "JwtBearer");
 
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAdB2C"));

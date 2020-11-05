@@ -1,17 +1,14 @@
 ﻿using PartsUnlimited.Shared.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PartsUnlimited.Shared
 {
-    public class CartClient
+    public class PublicCartClient
     {
-        public CartClient(HttpClient client)
+        public PublicCartClient(HttpClient client)
         {
             Client = client;
         }
@@ -21,6 +18,13 @@ namespace PartsUnlimited.Shared
         public async Task<IList<CartSummary>> GetCartSummary()
         {
             return await Client.GetFromJsonAsync<CartSummary[]>("api/ShoppingCart/Summary");
+        }
+    }
+
+    public class CartClient : PublicCartClient
+    {
+        public CartClient(HttpClient client) : base(client)
+        {
         }
 
         public async Task<ShoppingCartModel> GetCartDetails()

@@ -16,7 +16,7 @@ namespace PartsUnlimited.Client
 
             builder.Services.AddHttpClient<PublicCartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-            builder.Services.AddHttpClient<CartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            builder.Services.AddHttpClient<ICartClient, CartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             builder.Services.AddScoped<ShoppingCartNotificationService>();

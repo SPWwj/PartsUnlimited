@@ -29,6 +29,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using PartsUnlimited.Client;
 using PartsUnlimitedWebsite.Services;
+using PartsUnlimited.Shared;
 
 namespace PartsUnlimited
 {
@@ -90,6 +91,9 @@ namespace PartsUnlimited
 
             services.AddSingleton<ITelemetryProvider, EmptyTelemetryProvider>();
             services.AddScoped<IProductSearch, StringContainsProductSearch>();
+
+            services.AddScoped<ServerCartClient>();
+            services.AddScoped<ICartClient>(sp => sp.GetRequiredService<ServerCartClient>());
 
             SetupRecommendationService(services);
 

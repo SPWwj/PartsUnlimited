@@ -21,7 +21,7 @@ namespace PartsUnlimited.Shared
         }
     }
 
-    public class CartClient : PublicCartClient
+    public class CartClient : PublicCartClient, ICartClient
     {
         public CartClient(HttpClient client) : base(client)
         {
@@ -36,5 +36,11 @@ namespace PartsUnlimited.Shared
         {
             await Client.DeleteAsync($"api/ShoppingCart/Remove/{itemId}");
         }
+    }
+
+    public interface ICartClient
+    {
+        Task<ShoppingCartModel> GetCartDetails();
+        Task RemoveCartItem(int itemId);
     }
 }

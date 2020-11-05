@@ -23,7 +23,7 @@
 
                     @foreach (var item in _model.CartItems)
                     {
-                        <div id="row-@item.CartItemId" class="cart-item">
+                        <div @key="item.CartItemId" id="row-@item.CartItemId" class="cart-item">
                             <div class="row">
                                 <div class="col-xs-1 no-gutter-xs-right text-center-xs col-sm-2 col-sm-push-8 text-center-sm">
                                     <div class="item-label item-inventory">@item.Count</div>
@@ -34,7 +34,7 @@
                                     <div class="item-price">@item.Product.Price.ToString("C")</div>
                                 </div>
                                 <div class="visible-xs col-xs-2 text-right no-gutter-xs-left">
-                                    <button class="remove-link" @onclick="() => RemoveFromCart(item.CartItemId)">
+                                    <button class="remove-link" disabled="@ReadOnly" @onclick="() => RemoveFromCart(item.CartItemId)">
                                         <img src="/images/remove_icon.png" />
                                     </button>
                                 </div>
@@ -46,7 +46,7 @@
                                     <p class="text-content">@item.Product.Description</p>
                                 </div>
                                 <div class="hidden-xs remove-cart-item">
-                                    <button @onclick="() => RemoveFromCart(item.CartItemId)" class="remove-link btn">
+                                    <button disabled="@ReadOnly" @onclick="() => RemoveFromCart(item.CartItemId)" class="remove-link btn">
                                         Remove
                                     </button>
                                 </div>
@@ -75,6 +75,7 @@
 </div>
 @code {
     public ShoppingCartModel _model;
+    private int _renderCount = 0;
 
     [Parameter] public string Checkout { get; set; }
 
@@ -82,12 +83,23 @@
 
     [Parameter] public string ShoppingCartId { get; set; }
 
+    [Parameter] public bool ReadOnly { get; set; }
+
+    [Parameter] public ShoppingCartModel InitialModel { get; set; }
+
     private string _productDetailslinkTemplate = null;
 
     protected override async Task OnInitializedAsync()
     {
         _productDetailslinkTemplate = DetailsTemplate.Replace("$0", "{0}");
-        _model = await Client.GetCartDetails();
+        if (InitialModel != null)
+        {
+            _model = InitialModel;
+        }
+        else
+        {
+            _model = await Client.GetCartDetails();
+        }
     }
 
     public async Task RemoveFromCart(int id)

@@ -36,7 +36,7 @@
     {
         _cartItems = await Client.GetCartSummary();
         _cartCount = _cartItems.Select(i => i.Count).Sum();
-        _cartSummary = string.Join("\n", _cartItems.Distinct());
+        _cartSummary = string.Join("\n", _cartItems.Distinct().Select(c => $"{c.Title}: {c.Count}"));
     }
 
     private Task NotifyStateHasChanged() => InvokeAsync(async () => { await UpdateCart(); StateHasChanged(); });

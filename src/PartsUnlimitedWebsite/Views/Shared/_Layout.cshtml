@@ -4,7 +4,7 @@
 @using System.Runtime.InteropServices
 @using PartsUnlimited.Models
 @using PartsUnlimited.Client
- 
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     var protocol = Context.Request.Scheme;
@@ -171,7 +171,33 @@
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/respond/respond.src.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/_framework/blazor.webassembly.js")"></script>
+    @{
+        var context = User;
+    }
+    <script>
+        async function silentSignIn() {
+            let userHint = '@(User.Identity.IsAuthenticated ? User.FindFirst("emails").Value : "")';
+            if (userHint !== '') {
+                let settings = AuthenticationService.instance._settings;
 
+                const request = {
+                    redirectUri: settings.auth?.redirectUri,
+                    loginHint: userHint,
+                    scopes: []
+                };
+
+                if (settings.defaultAccessTokenScopes && settings.defaultAccessTokenScopes.length > 0) {
+                    request.scopes = settings.defaultAccessTokenScopes;
+                }
+
+                if (settings.additionalScopesToConsent && settings.additionalScopesToConsent.length > 0) {
+                    request.extraScopesToConsent = this._settings.additionalScopesToConsent;
+                }
+
+                await AuthenticationService.instance._msalApplication.ssoSilent(request);
+            }
+        }
+    </script>
     @RenderSection("scripts", required: false)
 
 </body>

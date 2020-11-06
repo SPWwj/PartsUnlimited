@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using PartsUnlimited.Shared;
 using System;
 using System.Net.Http;
@@ -31,7 +33,20 @@ namespace PartsUnlimited.Client
                 options.ProviderOptions.DefaultAccessTokenScopes.Add("https://PartsUnlimitedNetConf2020.onmicrosoft.com/770baddd-a0b0-4b8f-b9bb-681500425d2f/Cart.Edit");
             });
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+
+            await SignInSilent(host);
+
+            await host.RunAsync();
+        }
+
+        private static async Task SignInSilent(WebAssemblyHost host)
+        {
+            var authProvider = host.Services.GetRequiredService<AuthenticationStateProvider>();
+            var _ = await authProvider.GetAuthenticationStateAsync();
+            var js = host.Services.GetRequiredService<IJSRuntime>();
+
+            await js.InvokeVoidAsync("silentSignIn");
         }
     }
 }

@@ -177,7 +177,9 @@
     <script>
         async function silentSignIn() {
             let userHint = '@(User.Identity.IsAuthenticated ? User.FindFirst("emails").Value : "")';
-            if (userHint !== '') {
+            let msalApp = AuthenticationService.instance._msalApplication;
+
+            if (userHint !== '' && !msalApp.getAllAccounts()) {
                 let settings = AuthenticationService.instance._settings;
 
                 const request = {
@@ -194,7 +196,7 @@
                     request.extraScopesToConsent = this._settings.additionalScopesToConsent;
                 }
 
-                await AuthenticationService.instance._msalApplication.ssoSilent(request);
+                await msalApp.ssoSilent(request);
             }
         }
     </script>

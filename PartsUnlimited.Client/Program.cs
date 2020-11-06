@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -42,11 +43,15 @@ namespace PartsUnlimited.Client
 
         private static async Task SignInSilent(WebAssemblyHost host)
         {
-            var authProvider = host.Services.GetRequiredService<AuthenticationStateProvider>();
-            var _ = await authProvider.GetAuthenticationStateAsync();
-            var js = host.Services.GetRequiredService<IJSRuntime>();
+            var navigationManager = host.Services.GetRequiredService<NavigationManager>();
+            if (navigationManager.ToBaseRelativePath(navigationManager.Uri) != "authentication/login-callback")
+            {
+                var authProvider = host.Services.GetRequiredService<AuthenticationStateProvider>();
+                var _ = await authProvider.GetAuthenticationStateAsync();
+                var js = host.Services.GetRequiredService<IJSRuntime>();
 
-            await js.InvokeVoidAsync("silentSignIn");
+                await js.InvokeVoidAsync("silentSignIn");
+            }
         }
     }
 }

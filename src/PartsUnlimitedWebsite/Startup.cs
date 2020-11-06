@@ -185,21 +185,12 @@ namespace PartsUnlimited
             // Configure Session.
             app.UseSession();
 
-            app.MapWhen(p => File.Exists(Path.Combine(environment.WebRootPath, p.Request.Path.Value.TrimStart('/'))), sub =>
+            app.MapWhen(p => environment.WebRootFileProvider.GetFileInfo(p.Request.Path.Value).Exists, sub =>
             {
-                sub.Use((ctx, nxt) =>
-                {
-                    ctx.Response.Headers.Add("Cache-Control", new StringValues(new[] { "no-cache", "no-store", "must-revalidate" }));
-                    return nxt();
-                });
-
                 sub.UseCors();
+                app.UseBlazorFrameworkFiles();
                 sub.UseStaticFiles();
             });
-
-            // Add static files to the request pipeline
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
 
             app.UseRouting();
 

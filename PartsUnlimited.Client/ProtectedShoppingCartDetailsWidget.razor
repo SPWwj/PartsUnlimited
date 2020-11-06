@@ -4,6 +4,7 @@
         <Authorized>
             <ShoppingCartDetailsWidget ReadOnly="@(false || !_isBrowser)" @attributes="Params" />
         </Authorized>
+        <Authorizing><ShoppingCartDetailsWidget ReadOnly="@(false || !_isBrowser)" @attributes="Params" /></Authorizing>
         <NotAuthorized>
             <ShoppingCartDetailsWidget ReadOnly="true" @attributes="Params" />
             <Authenticate></Authenticate>

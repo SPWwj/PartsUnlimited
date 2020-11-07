@@ -27,6 +27,8 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using PartsUnlimitedWebsite.RazorComponents;
+using PartsUnlimitedWebsite.Services;
+using PartsUnlimited.Shared;
 
 namespace PartsUnlimited
 {
@@ -85,9 +87,13 @@ namespace PartsUnlimited
             services.AddSingleton<ITelemetryProvider, EmptyTelemetryProvider>();
             services.AddScoped<IProductSearch, StringContainsProductSearch>();
 
+            services.AddScoped<ServerCartClient>();
+            services.AddScoped<ICartClient>(sp => sp.GetRequiredService<ServerCartClient>());
+
             SetupRecommendationService(services);
 
             services.AddScoped<ShoppingCartNotificationService>();
+            services.AddScoped<ShoppingCartService>();
 
             services.AddScoped<IWebsiteOptions>(p =>
             {

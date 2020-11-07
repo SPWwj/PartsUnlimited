@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using PartsUnlimited.Models;
+using PartsUnlimited.Shared;
 using PartsUnlimited.Telemetry;
 using PartsUnlimited.ViewModels;
 using System.Collections.Generic;

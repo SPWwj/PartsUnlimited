@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using PartsUnlimited.Queries;
+using PartsUnlimited.Shared;
 using PartsUnlimited.ViewModels;
 using System;
 using System.Linq;

@@ -1,10 +1,12 @@
-﻿@using PartsUnlimited.ViewModels
-@using PartsUnlimited.Models
+﻿@using PartsUnlimited.Models
+@using PartsUnlimited.Shared
+@using PartsUnlimited.ViewModels
 @using Microsoft.EntityFrameworkCore
-@using Microsoft.Extensions.DependencyInjection; 
+@using Microsoft.Extensions.DependencyInjection;
 @using Microsoft.AspNetCore.Components.Web
 
 @inject ShoppingCartNotificationService Notifications
+@inject ICartClient Client
 @inherits OwningComponentBase<IPartsUnlimitedContext>
 <div id="shopping-cart-page">
     <section>
@@ -72,7 +74,9 @@
     </section>
 </div>
 @code {
-    [Parameter] public ShoppingCartViewModel2 Model { get; set; }
+    private ShoppingCartModel _model;
+
+    [Parameter] public ShoppingCartModel Model { get; set; }
 
     [Parameter] public string Checkout { get; set; }
 
@@ -82,9 +86,17 @@
 
     private string _productDetailslinkTemplate = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _productDetailslinkTemplate = DetailsTemplate.Replace("$0", "{0}");
+        if (Model != null)
+        {
+            _model = Model;
+        }
+        else
+        {
+            _model = await Client.GetCartDetails();
+        }
     }
 
     public async Task RemoveFromCart(int id)

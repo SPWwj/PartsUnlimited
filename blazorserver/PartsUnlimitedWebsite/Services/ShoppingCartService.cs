@@ -29,6 +29,8 @@ namespace PartsUnlimitedWebsite.Services
 
         internal async Task<ShoppingCartModel> GetShoppingCartDetails(string shoppingCartId)
         {
+            // Delay for demo purposes to show prerendering benefit
+            await Task.Delay(1000);
             var cart = new ShoppingCart(_context, shoppingCartId);
 
             var items = await cart.GetCartItemsAsync();

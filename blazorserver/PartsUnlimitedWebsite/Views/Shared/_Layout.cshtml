@@ -19,8 +19,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="Icon" href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/images/favicon.ico")" />
     <title>@ViewBag.Title – Parts Unlimited</title>
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Home.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Account.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/ShoppingCart.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Store.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Auth.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/css/bootstrap.css")" rel="stylesheet" type="text/css" />
     @await Component.InvokeAsync("Configuration")
-
 </head>
 <body>
     <header>
@@ -157,13 +163,6 @@
             </div>
         </div>
     </footer>
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Site.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Home.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Account.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/ShoppingCart.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Store.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Auth.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/css/bootstrap.css")" rel="stylesheet" type="text/css" />
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery/jquery.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery-zoom/jquery.zoom.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/js/bootstrap.min.js")"></script>

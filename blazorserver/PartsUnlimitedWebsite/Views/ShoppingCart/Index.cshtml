@@ -10,8 +10,3 @@
     ViewBag.Title = "Shopping Cart";
 }
 
-<component render-mode="Server"
-           type="typeof(ShoppingCartDetailsWidget)"
-           param-ShoppingCartId="ShoppingCart.GetCartId(Context)"
-           param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })"
-           param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />

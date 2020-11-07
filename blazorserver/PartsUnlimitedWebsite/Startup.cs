@@ -179,12 +179,6 @@ namespace PartsUnlimited
 
             app.MapWhen(p => File.Exists(Path.Combine(environment.WebRootPath, p.Request.Path.Value.TrimStart('/'))), sub =>
             {
-                sub.Use((ctx, nxt) =>
-                {
-                    ctx.Response.Headers.Add("Cache-Control", new StringValues(new[] { "no-cache", "no-store", "must-revalidate" }));
-                    return nxt();
-                });
-
                 sub.UseCors();
                 sub.UseStaticFiles();
             });

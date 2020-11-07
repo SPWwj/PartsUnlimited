@@ -101,8 +101,5 @@
 
     public async Task RemoveFromCart(int id)
     {
-        await Service.RemoveFromCart(ShoppingCartId, id);
-        _model = await Service.GetShoppingCartDetails(ShoppingCartId);
-        await Notifications.OnItemRemoved();
     }
 }

@@ -17,11 +17,9 @@ namespace PartsUnlimited.Controllers
     public class CheckoutController : Controller
     {
         private readonly IPartsUnlimitedContext _db;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CheckoutController(IPartsUnlimitedContext context, UserManager<ApplicationUser> userManager)
+        public CheckoutController(IPartsUnlimitedContext context)
         {
-            _userManager = userManager;
             _db = context;
         }
 
@@ -32,14 +30,12 @@ namespace PartsUnlimited.Controllers
 
         public async Task<IActionResult> AddressAndPayment()
         {
-            var id = _userManager.GetUserId(User);
-            var user = await _db.Users.FirstOrDefaultAsync(o => o.Id == id);
-
+            var email = User.FindFirstValue("emails");
             var order = new Order
             {
-                Name = user.Name,
-                Email = user.Email,
-                Username = user.UserName
+                Name = User.Identity.Name,
+                Email = email,
+                Username = email
             };
 
             return View(order);

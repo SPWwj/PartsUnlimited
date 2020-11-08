@@ -66,8 +66,6 @@ namespace PartsUnlimited
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAdB2C"));
 
-            AppBuilderLoginProviderExtensions.AddLoginProviders(services, new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
-
             // Configure admin policies
             services.AddAuthorization(auth =>
             {

@@ -64,14 +64,11 @@ namespace PartsUnlimited
             //    .AddEntityFrameworkStores<PartsUnlimitedContext>()
             //    .AddDefaultTokenProviders();
 
-            // The authentication scheme will be overriden by the one below, but for now, leave it as it is.
             services.AddAuthentication()
                 .AddMicrosoftIdentityWebApi(Configuration, "AzureAdB2CAPI", "JwtBearer");
 
             services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAdB2C"));
-
-            AppBuilderLoginProviderExtensions.AddLoginProviders(services, new ConfigurationLoginProviders(Configuration.GetSection("Authentication")));
 
             // Configure admin policies
             services.AddAuthorization(auth =>

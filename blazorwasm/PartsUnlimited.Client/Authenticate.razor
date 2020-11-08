@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-<RemoteAuthenticatorView Action="@RemoteAuthenticationActions.LogIn"><LoggingIn>@ChildContent</LoggingIn></RemoteAuthenticatorView>
+<RemoteAuthenticatorView Action="@RemoteAuthenticationActions.LogIn">
+    <LoggingIn>@ChildContent</LoggingIn>
+</RemoteAuthenticatorView>
 
 @code{
     [Parameter] public RenderFragment ChildContent { get; set; }

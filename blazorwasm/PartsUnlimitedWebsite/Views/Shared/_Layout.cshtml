@@ -20,8 +20,14 @@
     <link rel="Icon" href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/images/favicon.ico")" />
     <base href="~/" />
     <title>@ViewBag.Title – Parts Unlimited</title>
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Home.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Account.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/ShoppingCart.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Store.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Auth.css")" rel="stylesheet" type="text/css" />
+    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/css/bootstrap.css")" rel="stylesheet" type="text/css" />
     @await Component.InvokeAsync("Configuration")
-
 </head>
 <body>
     <header>
@@ -158,49 +164,12 @@
             </div>
         </div>
     </footer>
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Site.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Home.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Account.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/ShoppingCart.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Store.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/Content/Auth.css")" rel="stylesheet" type="text/css" />
-    <link href="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/css/bootstrap.css")" rel="stylesheet" type="text/css" />
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery/jquery.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/jquery-zoom/jquery.zoom.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/bootstrap/js/bootstrap.min.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/lib/respond/respond.src.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js")"></script>
     <script src="@UriHelper.BuildAbsolute(protocol, host, pBase, "/_framework/blazor.webassembly.js")"></script>
-    @{
-        var context = User;
-    }
-    <script>
-        async function silentSignIn() {
-            let userHint = '@(User.Identity.IsAuthenticated ? User.FindFirst("emails").Value : "")';
-            let msalApp = AuthenticationService.instance._msalApplication;
-
-            if (userHint !== '' && !msalApp.getAllAccounts()) {
-                let settings = AuthenticationService.instance._settings;
-
-                const request = {
-                    redirectUri: settings.auth?.redirectUri,
-                    loginHint: userHint,
-                    scopes: []
-                };
-
-                if (settings.defaultAccessTokenScopes && settings.defaultAccessTokenScopes.length > 0) {
-                    request.scopes = settings.defaultAccessTokenScopes;
-                }
-
-                if (settings.additionalScopesToConsent && settings.additionalScopesToConsent.length > 0) {
-                    request.extraScopesToConsent = this._settings.additionalScopesToConsent;
-                }
-
-                await msalApp.ssoSilent(request);
-            }
-        }
-    </script>
     @RenderSection("scripts", required: false)
-
 </body>
 </html>

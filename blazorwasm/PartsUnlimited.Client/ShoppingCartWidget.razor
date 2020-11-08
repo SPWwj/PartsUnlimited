@@ -1,9 +1,8 @@
 ﻿@using System.Linq;
-
+@implements IDisposable
 @inject ShoppingCartNotificationService Notifications
 @inject PublicCartClient Client
-@inject AuthenticationStateProvider Provider
-@implements IDisposable
+
 <li>
     <a href="@CartUrl" title="@_cartSummary" class="head-link" id="shopping-cart-link">
 

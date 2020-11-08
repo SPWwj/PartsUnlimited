@@ -20,7 +20,6 @@ using System;
 
 namespace PartsUnlimited.Controllers
 {
-    //[Authorize(JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class ShoppingCartApiController : Controller
     {
@@ -34,7 +33,7 @@ namespace PartsUnlimited.Controllers
         }
 
         [HttpGet("api/ShoppingCart")]
-        [Authorize(AuthenticationSchemes = "JwtBearer")]
+        //[Authorize(AuthenticationSchemes = "JwtBearer")]
         public async Task<IActionResult> Get()
         {
             var shoppingCartId = ShoppingCart.GetCartId(HttpContext);
@@ -56,7 +55,7 @@ namespace PartsUnlimited.Controllers
         }
 
         [HttpDelete("api/ShoppingCart/Remove/{id}")]
-        [Authorize(AuthenticationSchemes = "JwtBearer")]
+        //[Authorize(AuthenticationSchemes = "JwtBearer")]
         public async Task<IActionResult> RemoveFromCart(int id, CancellationToken cancellationToken)
         {
             var cartId = ShoppingCart.GetCartId(HttpContext);

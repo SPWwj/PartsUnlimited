@@ -32,7 +32,7 @@ namespace PartsUnlimited.Controllers
 
         //
         // GET: /ShoppingCart/
-        [Authorize]
+        //[Authorize]
         public IActionResult Index()
         {
             var cart = ShoppingCart.GetCart(_db, HttpContext);

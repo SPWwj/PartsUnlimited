@@ -19,39 +19,13 @@ namespace PartsUnlimited.Client
 
             builder.Services.AddHttpClient<PublicCartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-            builder.Services.AddHttpClient<ICartClient, CartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+            builder.Services.AddHttpClient<ICartClient, CartClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddScoped<ShoppingCartNotificationService>();
 
-            builder.Services.AddMsalAuthentication(options =>
-            {
-                var auth = options.ProviderOptions.Authentication;
-                auth.Authority = "https://partsunlimitednetconf2020.b2clogin.com/partsunlimitednetconf2020.onmicrosoft.com/b2c_1_susi/";
-                auth.ClientId = "3308a8fd-34ef-4b1a-ba55-4fa0a5b72d5d";
-                auth.ValidateAuthority = false;
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("https://PartsUnlimitedNetConf2020.onmicrosoft.com/770baddd-a0b0-4b8f-b9bb-681500425d2f/Cart.Read");
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("https://PartsUnlimitedNetConf2020.onmicrosoft.com/770baddd-a0b0-4b8f-b9bb-681500425d2f/Cart.Edit");
-            });
-
             var host = builder.Build();
 
-            await SignInSilent(host);
-
             await host.RunAsync();
-        }
-
-        private static async Task SignInSilent(WebAssemblyHost host)
-        {
-            var navigationManager = host.Services.GetRequiredService<NavigationManager>();
-            if (navigationManager.ToBaseRelativePath(navigationManager.Uri) != "authentication/login-callback")
-            {
-                var authProvider = host.Services.GetRequiredService<AuthenticationStateProvider>();
-                var _ = await authProvider.GetAuthenticationStateAsync();
-                var js = host.Services.GetRequiredService<IJSRuntime>();
-
-                await js.InvokeVoidAsync("silentSignIn");
-            }
         }
     }
 }

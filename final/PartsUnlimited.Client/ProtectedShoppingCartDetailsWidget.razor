@@ -1,0 +1,20 @@
+﻿@using System.Runtime.InteropServices
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <ShoppingCartDetailsWidget ReadOnly="!OperatingSystem.IsBrowser()" @attributes="Params" />
+        </Authorized>
+        <Authorizing>
+            <ShoppingCartDetailsWidget ReadOnly="true" @attributes="Params" />
+        </Authorizing>
+        <NotAuthorized>
+            <ShoppingCartDetailsWidget ReadOnly="true" @attributes="Params" />
+            <Authenticate />
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+
+@code{
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object> Params { get; set; }
+}

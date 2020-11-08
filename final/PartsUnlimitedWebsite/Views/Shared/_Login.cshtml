@@ -1,0 +1,23 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    var protocol = Context.Request.Scheme;
+    var host = Context.Request.Host;
+}
+@if (User.Identity.IsAuthenticated)
+{
+
+    <li class="dropdown">
+        <a href="@Url.Action("Index", "Store")" id="profile-link" class="dropdown-toggle head-link" data-toggle="dropdown">Profile&nbsp;<br class="hidden-xs" /><b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a class="nav-link text-dark" title="Manage" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="EditProfile">Manage account</a></li>
+            <li>@Html.ActionLink("View Orders", "Index", "Orders", new { Area = string.Empty })</li>
+            <li>
+                <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Log out</a>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li><a id="login-link" class="head-link" asp-protocol="@protocol" asp-host="@host" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Log in</a></li>
+}

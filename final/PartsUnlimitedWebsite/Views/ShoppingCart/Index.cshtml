@@ -1,0 +1,20 @@
+﻿@using PartsUnlimited
+@using PartsUnlimited.Models
+@using PartsUnlimited.ViewModels;
+@using PartsUnlimited.Client
+@using PartsUnlimitedWebsite.Services
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model PartsUnlimited.ViewModels.ShoppingCartViewModel
+@inject ServerCartClient CartClient
+@{
+    ViewBag.Title = "Shopping Cart";
+    CartClient.ShoppingCartId = ShoppingCart.GetCartId(Context);
+}
+
+<component render-mode="WebAssemblyPrerendered"
+           type="typeof(ProtectedShoppingCartDetailsWidget)"
+           param-ShoppingCartId="ShoppingCart.GetCartId(Context)"
+           param-InitialModel="ShoppingCartViewModel.ToModel(Model)"
+           param-DetailsTemplate="@Url.Action("Details", "Store", new { id = "$0" })"
+           param-Checkout="@Url.Action("AddressAndPayment", "Checkout", null)" />

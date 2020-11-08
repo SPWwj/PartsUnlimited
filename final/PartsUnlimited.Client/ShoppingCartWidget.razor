@@ -1,0 +1,47 @@
+﻿@using System.Linq;
+@implements IDisposable
+@inject ShoppingCartNotificationService Notifications
+@inject PublicCartClient Client
+
+<li>
+    <a href="@CartUrl" title="@_cartSummary" class="head-link" id="shopping-cart-link">
+
+        <div>Cart</div>
+        @if (_cartCount > 0)
+        {
+            <span class="hidden-xs" id="cart-count">@_cartCount</span>
+        }
+    </a>
+</li>
+
+@code {
+
+    [Parameter] public string ShoppingCartId { get; set; }
+
+    [Parameter] public string CartUrl { get; set; }
+
+    private IList<CartSummary> _cartItems = new List<CartSummary>();
+    private int _cartCount;
+    private string _cartSummary;
+    private IDisposable _subscription;
+
+    protected override Task OnInitializedAsync()
+    {
+        _subscription = Notifications.Register(NotifyStateHasChanged);
+        return UpdateCart();
+    }
+
+    private async Task UpdateCart()
+    {
+        _cartItems = await Client.GetCartSummary();
+        _cartCount = _cartItems.Select(i => i.Count).Sum();
+        _cartSummary = string.Join("\n", _cartItems.Distinct().Select(c => $"{c.Title}: {c.Count}"));
+    }
+
+    private Task NotifyStateHasChanged() => InvokeAsync(async () => { await UpdateCart(); StateHasChanged(); });
+
+    public void Dispose()
+    {
+        _subscription.Dispose();
+    }
+}

@@ -95,6 +95,8 @@ namespace PartsUnlimited
             services.AddScoped<ShoppingCartService>();
 
             // TODO: Register cart client for prerendering
+            services.AddScoped<ServerCartClient>();
+            services.AddScoped<ICartClient, ServerCartClient>();
 
             services.AddScoped<IWebsiteOptions>(p =>
             {

@@ -2,12 +2,14 @@
 @using PartsUnlimited.Models
 @using PartsUnlimited.ViewModels;
 @using PartsUnlimited.Client
-@using PartsUnlimitedWebsite.Services 
+@using PartsUnlimitedWebsite.Services
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model PartsUnlimited.ViewModels.ShoppingCartViewModel
+@inject ServerCartClient CartClient
 @{
     ViewBag.Title = "Shopping Cart";
+    CartClient.ShoppingCartId = ShoppingCart.GetCartId(Context);
 }
 
 <component render-mode="WebAssembly"
